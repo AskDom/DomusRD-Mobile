@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { apiFetch } from "../api/client";
 import PropertyCard from "../components/PropertyCard";
+import { colors } from "../theme/colors";
 
 export default function PropertyList({ navigation }) {
   const [properties, setProperties] = useState([]);
@@ -29,19 +30,24 @@ export default function PropertyList({ navigation }) {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
-      <View className="px-4 pt-4">
-        <Text className="font-bold text-lg text-gray-900">Propiedades</Text>
+      <View className="px-4 pt-4 pb-1">
+        <Text className="font-extrabold text-2xl text-gray-900">Propiedades</Text>
+        {!loading && !error && (
+          <Text className="text-gray-500 mt-0.5">
+            {properties.length} {properties.length === 1 ? "disponible" : "disponibles"}
+          </Text>
+        )}
       </View>
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#1a56db" />
+          <ActivityIndicator size="large" color={colors.brand700} />
         </View>
       ) : error ? (
         <View className="flex-1 items-center justify-center px-6">
           <Text className="text-red-600 text-center mb-3">{error}</Text>
           <Pressable onPress={load}>
-            <Text className="text-blue-700 font-semibold">Reintentar</Text>
+            <Text className="text-brand-700 font-semibold">Reintentar</Text>
           </Pressable>
         </View>
       ) : (

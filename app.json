@@ -5,6 +5,8 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "icon": "./assets/icon.png",
+    "backgroundColor": "#102E47",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.domusrd.mobile"
@@ -12,15 +14,24 @@
     "android": {
       "package": "com.domusrd.mobile",
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/adaptive-icon-foreground.png",
+        "backgroundColor": "#102E47"
       }
     },
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-font",
-      "expo-splash-screen",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "backgroundColor": "#102E47",
+          "resizeMode": "contain"
+        }
+      ],
       "expo-secure-store"
     ]
   }

@@ -59,9 +59,11 @@ export default function ConversationThread({ route }) {
       keyboardVerticalOffset={90}
     >
       <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
-        <Text className="text-gray-500 text-xs px-4 pt-2" numberOfLines={1}>
-          {propertyTitle}
-        </Text>
+        <View className="px-4 pt-2 pb-2 border-b border-gray-100 bg-white">
+          <Text className="text-gray-500 text-xs" numberOfLines={1}>
+            {propertyTitle}
+          </Text>
+        </View>
 
         <FlatList
           data={thread}
@@ -77,8 +79,8 @@ export default function ConversationThread({ route }) {
                 <View
                   className={
                     mine
-                      ? "bg-blue-700 rounded-2xl rounded-br-sm px-3 py-2 max-w-[80%]"
-                      : "bg-white border border-gray-200 rounded-2xl rounded-bl-sm px-3 py-2 max-w-[80%]"
+                      ? "bg-brand-700 rounded-2xl rounded-br-sm px-3.5 py-2.5 max-w-[80%] shadow-sm"
+                      : "bg-white border border-gray-100 rounded-2xl rounded-bl-sm px-3.5 py-2.5 max-w-[80%] shadow-sm"
                   }
                 >
                   <Text className={mine ? "text-white" : "text-gray-900"}>{item.text}</Text>
@@ -88,18 +90,19 @@ export default function ConversationThread({ route }) {
           }}
         />
 
-        <View className="flex-row items-center gap-2 p-3 border-t border-gray-200 bg-white">
+        <View className="flex-row items-end gap-2 p-3 border-t border-gray-100 bg-white">
           <TextInput
             value={text}
             onChangeText={setText}
             placeholder="Escribí un mensaje..."
-            className="flex-1 border border-gray-300 rounded-xl px-4 py-2"
+            placeholderTextColor="#9CA3AF"
+            className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2.5 max-h-28"
             multiline
           />
           <Pressable
             onPress={handleSend}
             disabled={sending || !text.trim()}
-            className="bg-blue-700 rounded-xl px-4 py-2 disabled:opacity-50"
+            className="bg-brand-700 rounded-2xl px-4 py-3 active:bg-brand-800 disabled:opacity-40"
           >
             <Text className="text-white font-semibold">Enviar</Text>
           </Pressable>

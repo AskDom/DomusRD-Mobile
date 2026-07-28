@@ -10,14 +10,14 @@ export default function Perfil() {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="items-center pt-10 px-6">
+      <View className="items-center pt-12 px-6">
         {currentUser?.avatar ? (
           <Image
             source={{ uri: currentUser.avatar }}
-            className="w-24 h-24 rounded-full bg-gray-200"
+            className="w-24 h-24 rounded-full bg-gray-200 shadow-sm"
           />
         ) : (
-          <View className="w-24 h-24 rounded-full bg-blue-700 items-center justify-center">
+          <View className="w-24 h-24 rounded-full bg-brand-700 items-center justify-center shadow-sm">
             <Text className="text-white font-extrabold text-3xl">{initial}</Text>
           </View>
         )}
@@ -25,15 +25,15 @@ export default function Perfil() {
         <Text className="font-bold text-xl text-gray-900 mt-4">{currentUser?.name}</Text>
         <Text className="text-gray-500 mt-1">{currentUser?.email}</Text>
 
-        <View className="bg-blue-50 rounded-full px-3 py-1 mt-3">
-          <Text className="text-blue-700 font-semibold text-xs">{currentUser?.role}</Text>
+        <View className="bg-brand-50 rounded-full px-3 py-1 mt-3">
+          <Text className="text-brand-700 font-semibold text-xs">{currentUser?.role}</Text>
         </View>
       </View>
 
       <View className="mt-10 px-6">
         <Pressable
           onPress={logout}
-          className="border border-red-200 rounded-xl py-3 items-center"
+          className="border border-red-200 rounded-2xl py-3.5 items-center active:bg-red-50"
         >
           <Text className="text-red-600 font-semibold">Cerrar sesión</Text>
         </Pressable>

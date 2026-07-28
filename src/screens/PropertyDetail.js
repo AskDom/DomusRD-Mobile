@@ -6,6 +6,7 @@ import { apiFetch } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { formatPrice } from "../components/PropertyCard";
+import { colors } from "../theme/colors";
 
 export default function PropertyDetail({ route, navigation }) {
   const { id } = route.params;
@@ -31,7 +32,7 @@ export default function PropertyDetail({ route, navigation }) {
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#1a56db" />
+        <ActivityIndicator size="large" color={colors.brand700} />
       </View>
     );
   }
@@ -59,25 +60,31 @@ export default function PropertyDetail({ route, navigation }) {
               {property.title}
             </Text>
             <Pressable onPress={() => toggleFavorite(property.id)} hitSlop={8}>
-              <Text className={isFavorite(property.id) ? "text-red-500 text-2xl" : "text-gray-300 text-2xl"}>
+              <Text className={isFavorite(property.id) ? "text-accent-500 text-2xl" : "text-gray-300 text-2xl"}>
                 {isFavorite(property.id) ? "♥" : "♡"}
               </Text>
             </Pressable>
           </View>
           <Text className="text-gray-500 mt-1">{property.city}</Text>
-          <Text className="font-bold text-xl text-blue-700 mt-3">
+          <Text className="font-bold text-xl text-brand-700 mt-3">
             {formatPrice(property.price)}
           </Text>
 
-          <View className="flex-row gap-4 mt-4">
+          <View className="flex-row gap-2 mt-4">
             {property.rooms != null && (
-              <Text className="text-gray-700">{property.rooms} hab.</Text>
+              <View className="bg-gray-100 rounded-full px-3 py-1.5">
+                <Text className="text-gray-700 text-sm">{property.rooms} hab.</Text>
+              </View>
             )}
             {property.baths != null && (
-              <Text className="text-gray-700">{property.baths} baños</Text>
+              <View className="bg-gray-100 rounded-full px-3 py-1.5">
+                <Text className="text-gray-700 text-sm">{property.baths} baños</Text>
+              </View>
             )}
             {property.parking != null && (
-              <Text className="text-gray-700">{property.parking} parqueos</Text>
+              <View className="bg-gray-100 rounded-full px-3 py-1.5">
+                <Text className="text-gray-700 text-sm">{property.parking} parqueos</Text>
+              </View>
             )}
           </View>
 
@@ -102,7 +109,7 @@ export default function PropertyDetail({ route, navigation }) {
                       propertyTitle: property.title,
                     })
                   }
-                  className="bg-blue-700 rounded-xl py-3 items-center mt-3"
+                  className="bg-brand-700 rounded-2xl py-3.5 items-center mt-3 shadow-sm active:bg-brand-800"
                 >
                   <Text className="text-white font-semibold">Contactar al vendedor</Text>
                 </Pressable>
@@ -112,7 +119,7 @@ export default function PropertyDetail({ route, navigation }) {
 
           {!property.lat && (
             <Pressable className="mt-4">
-              <Text className="text-blue-700 font-medium">
+              <Text className="text-brand-700 font-medium">
                 Inicia sesión para ver la ubicación exacta
               </Text>
             </Pressable>

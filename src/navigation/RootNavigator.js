@@ -1,6 +1,7 @@
 import { View, ActivityIndicator } from "react-native";
 
 import { useAuth } from "../context/AuthContext";
+import { colors } from "../theme/colors";
 import AuthStack from "./AuthStack";
 import AppTabs from "./AppTabs";
 
@@ -10,7 +11,7 @@ export default function RootNavigator() {
   if (bootstrapping) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#1a56db" />
+        <ActivityIndicator size="large" color={colors.brand700} />
       </View>
     );
   }

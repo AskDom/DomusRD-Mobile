@@ -12,24 +12,27 @@ export default function Login({ navigation }) {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 justify-center px-6">
-        <Text className="font-extrabold text-3xl text-gray-900 mb-8">DomusRD</Text>
+        <Text className="font-extrabold text-4xl text-brand-700">DomusRD</Text>
+        <Text className="text-gray-500 mb-10 mt-1">Portal inmobiliario dominicano</Text>
 
-        <Text className="font-medium text-sm text-gray-700 mb-1">Correo</Text>
+        <Text className="font-medium text-sm text-gray-700 mb-1.5">Correo</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
-          className="border border-gray-300 rounded-xl px-4 py-3 mb-4"
+          className="bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 mb-4 text-gray-900"
+          placeholderTextColor="#9CA3AF"
           placeholder="tucorreo@ejemplo.com"
         />
 
-        <Text className="font-medium text-sm text-gray-700 mb-1">Contraseña</Text>
+        <Text className="font-medium text-sm text-gray-700 mb-1.5">Contraseña</Text>
         <TextInput
           value={password}
           onChangeText={setPassword}
           secureTextEntry
-          className="border border-gray-300 rounded-xl px-4 py-3 mb-4"
+          className="bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 mb-4 text-gray-900"
+          placeholderTextColor="#9CA3AF"
           placeholder="••••••••"
         />
 
@@ -38,18 +41,18 @@ export default function Login({ navigation }) {
         <Pressable
           onPress={() => login({ email, password })}
           disabled={loading}
-          className="bg-blue-700 rounded-xl py-3 items-center mb-4 disabled:opacity-60"
+          className="bg-brand-700 rounded-2xl py-4 items-center mb-5 shadow-sm active:bg-brand-800 disabled:opacity-60"
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text className="font-semibold text-white">Iniciar sesión</Text>
+            <Text className="font-semibold text-white text-base">Iniciar sesión</Text>
           )}
         </Pressable>
 
         <Pressable onPress={() => navigation.navigate("Register")}>
           <Text className="text-center text-gray-600">
-            ¿No tenés cuenta? <Text className="font-semibold text-blue-700">Regístrate</Text>
+            ¿No tenés cuenta? <Text className="font-semibold text-brand-700">Regístrate</Text>
           </Text>
         </Pressable>
       </View>

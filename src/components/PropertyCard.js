@@ -12,7 +12,7 @@ export default function PropertyCard({ property, onPress }) {
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row bg-white rounded-2xl border border-gray-200 mb-3 overflow-hidden"
+      className="flex-row bg-white rounded-2xl border border-gray-100 mb-3 overflow-hidden shadow-sm active:opacity-90"
     >
       {property.images?.[0] ? (
         <Image source={{ uri: property.images[0] }} className="w-28 h-28" />
@@ -25,7 +25,7 @@ export default function PropertyCard({ property, onPress }) {
             {property.title}
           </Text>
           <Pressable onPress={() => toggleFavorite(property.id)} hitSlop={8}>
-            <Text className={favorited ? "text-red-500 text-lg" : "text-gray-300 text-lg"}>
+            <Text className={favorited ? "text-accent-500 text-lg" : "text-gray-300 text-lg"}>
               {favorited ? "♥" : "♡"}
             </Text>
           </Pressable>
@@ -33,7 +33,7 @@ export default function PropertyCard({ property, onPress }) {
         <Text className="text-gray-500 text-sm mt-1" numberOfLines={1}>
           {property.city}
         </Text>
-        <Text className="font-extrabold text-blue-700 mt-2">{formatPrice(property.price)}</Text>
+        <Text className="font-extrabold text-brand-700 mt-2">{formatPrice(property.price)}</Text>
       </View>
     </Pressable>
   );

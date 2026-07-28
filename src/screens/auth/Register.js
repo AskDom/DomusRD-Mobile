@@ -13,32 +13,36 @@ export default function Register({ navigation }) {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="flex-1 justify-center px-6">
-        <Text className="font-extrabold text-3xl text-gray-900 mb-8">Crear cuenta</Text>
+        <Text className="font-extrabold text-3xl text-gray-900 mb-1">Crear cuenta</Text>
+        <Text className="text-gray-500 mb-8">Sumate a DomusRD en un minuto</Text>
 
-        <Text className="font-medium text-sm text-gray-700 mb-1">Nombre</Text>
+        <Text className="font-medium text-sm text-gray-700 mb-1.5">Nombre</Text>
         <TextInput
           value={name}
           onChangeText={setName}
-          className="border border-gray-300 rounded-xl px-4 py-3 mb-4"
+          className="bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 mb-4 text-gray-900"
+          placeholderTextColor="#9CA3AF"
           placeholder="Tu nombre"
         />
 
-        <Text className="font-medium text-sm text-gray-700 mb-1">Correo</Text>
+        <Text className="font-medium text-sm text-gray-700 mb-1.5">Correo</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
-          className="border border-gray-300 rounded-xl px-4 py-3 mb-4"
+          className="bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 mb-4 text-gray-900"
+          placeholderTextColor="#9CA3AF"
           placeholder="tucorreo@ejemplo.com"
         />
 
-        <Text className="font-medium text-sm text-gray-700 mb-1">Contraseña</Text>
+        <Text className="font-medium text-sm text-gray-700 mb-1.5">Contraseña</Text>
         <TextInput
           value={password}
           onChangeText={setPassword}
           secureTextEntry
-          className="border border-gray-300 rounded-xl px-4 py-3 mb-4"
+          className="bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 mb-4 text-gray-900"
+          placeholderTextColor="#9CA3AF"
           placeholder="••••••••"
         />
 
@@ -47,18 +51,18 @@ export default function Register({ navigation }) {
         <Pressable
           onPress={() => register({ name, email, password })}
           disabled={loading}
-          className="bg-blue-700 rounded-xl py-3 items-center mb-4 disabled:opacity-60"
+          className="bg-brand-700 rounded-2xl py-4 items-center mb-5 shadow-sm active:bg-brand-800 disabled:opacity-60"
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text className="font-semibold text-white">Crear cuenta</Text>
+            <Text className="font-semibold text-white text-base">Crear cuenta</Text>
           )}
         </Pressable>
 
         <Pressable onPress={() => navigation.navigate("Login")}>
           <Text className="text-center text-gray-600">
-            ¿Ya tenés cuenta? <Text className="font-semibold text-blue-700">Inicia sesión</Text>
+            ¿Ya tenés cuenta? <Text className="font-semibold text-brand-700">Inicia sesión</Text>
           </Text>
         </Pressable>
       </View>

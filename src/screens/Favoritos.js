@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { apiFetch } from "../api/client";
 import { useFavorites } from "../context/FavoritesContext";
 import PropertyCard from "../components/PropertyCard";
+import { colors } from "../theme/colors";
 
 export default function Favoritos({ navigation }) {
   const { favorites } = useFavorites();
@@ -28,25 +29,28 @@ export default function Favoritos({ navigation }) {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
-      <View className="px-4 pt-4">
-        <Text className="font-bold text-lg text-gray-900">Favoritos</Text>
+      <View className="px-4 pt-4 pb-1">
+        <Text className="font-extrabold text-2xl text-gray-900">Favoritos</Text>
       </View>
 
       {loading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#1a56db" />
+          <ActivityIndicator size="large" color={colors.brand700} />
         </View>
       ) : (
         <FlatList
           data={properties}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ padding: 16 }}
+          contentContainerStyle={{ padding: 16, flexGrow: 1 }}
           onRefresh={load}
           refreshing={loading}
           ListEmptyComponent={
-            <Text className="text-center text-gray-500 mt-10">
-              Todavía no marcaste ninguna propiedad como favorita.
-            </Text>
+            <View className="flex-1 items-center justify-center px-10 pt-16">
+              <Text className="text-5xl mb-3">♡</Text>
+              <Text className="text-center text-gray-500">
+                Todavía no marcaste ninguna propiedad como favorita.
+              </Text>
+            </View>
           }
           renderItem={({ item }) => (
             <PropertyCard
