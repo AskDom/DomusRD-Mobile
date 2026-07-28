@@ -32,7 +32,20 @@
           "resizeMode": "contain"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "DomusRD necesita acceso a tus fotos para que puedas subir imágenes de la propiedad.",
+          "cameraPermission": "DomusRD necesita acceso a la cámara para que puedas fotografiar la propiedad."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "DomusRD necesita tu ubicación para marcar dónde está la propiedad que estás publicando."
+        }
+      ]
     ]
   }
 }

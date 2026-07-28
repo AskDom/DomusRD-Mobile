@@ -12,8 +12,11 @@ export const clearToken = () => SecureStore.deleteItemAsync(TOKEN_KEY);
 // guardado en SecureStore, para no repetirlo en cada llamada del app.
 export async function apiFetch(path, options = {}) {
   const token = await getToken();
+  const isFormData = options.body instanceof FormData;
   const headers = {
-    "Content-Type": "application/json",
+    // FormData necesita que fetch arme el Content-Type con el boundary solo —
+    // si lo forzamos a JSON acá, el backend no puede parsear el multipart.
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
     ...(options.headers || {}),
   };
   if (token) {
