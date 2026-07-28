@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "DomusRD",
+    "slug": "domusrd-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.domusrd.mobile"
+    },
+    "android": {
+      "package": "com.domusrd.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-status-bar",
+      "expo-font",
+      "expo-splash-screen",
+      "expo-secure-store"
+    ]
+  }
+}
