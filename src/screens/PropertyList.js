@@ -3,11 +3,9 @@ import { View, Text, FlatList, Pressable, ActivityIndicator } from "react-native
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { apiFetch } from "../api/client";
-import { useAuth } from "../context/AuthContext";
 import PropertyCard from "../components/PropertyCard";
 
 export default function PropertyList({ navigation }) {
-  const { logout } = useAuth();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -31,11 +29,8 @@ export default function PropertyList({ navigation }) {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
-      <View className="px-4 pt-4 flex-row items-center justify-between">
+      <View className="px-4 pt-4">
         <Text className="font-bold text-lg text-gray-900">Propiedades</Text>
-        <Pressable onPress={logout}>
-          <Text className="text-blue-700 font-medium">Cerrar sesión</Text>
-        </Pressable>
       </View>
 
       {loading ? (

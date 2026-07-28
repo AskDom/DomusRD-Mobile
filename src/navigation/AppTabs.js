@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeStack from "./HomeStack";
 import FavoritesStack from "./FavoritesStack";
 import Placeholder from "../screens/Placeholder";
+import Perfil from "../screens/Perfil";
 
 const Tab = createBottomTabNavigator();
 
@@ -14,9 +15,7 @@ export default function AppTabs() {
       <Tab.Screen name="Mensajes">
         {() => <Placeholder title="Mensajes" />}
       </Tab.Screen>
-      <Tab.Screen name="Perfil">
-        {() => <Placeholder title="Perfil" />}
-      </Tab.Screen>
+      <Tab.Screen name="Perfil" component={Perfil} />
     </Tab.Navigator>
   );
 }
