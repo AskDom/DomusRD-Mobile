@@ -3,12 +3,12 @@ import { View, Text, Image, ScrollView, ActivityIndicator, Pressable } from "rea
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { apiFetch } from "../api/client";
-
-const formatPrice = (price) =>
-  `US$${Number(price).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+import { useFavorites } from "../context/FavoritesContext";
+import { formatPrice } from "../components/PropertyCard";
 
 export default function PropertyDetail({ route }) {
   const { id } = route.params;
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -52,7 +52,16 @@ export default function PropertyDetail({ route }) {
         )}
 
         <View className="p-4">
-          <Text className="font-extrabold text-2xl text-gray-900">{property.title}</Text>
+          <View className="flex-row items-start justify-between">
+            <Text className="font-extrabold text-2xl text-gray-900 flex-1 pr-3">
+              {property.title}
+            </Text>
+            <Pressable onPress={() => toggleFavorite(property.id)} hitSlop={8}>
+              <Text className={isFavorite(property.id) ? "text-red-500 text-2xl" : "text-gray-300 text-2xl"}>
+                {isFavorite(property.id) ? "♥" : "♡"}
+              </Text>
+            </Pressable>
+          </View>
           <Text className="text-gray-500 mt-1">{property.city}</Text>
           <Text className="font-bold text-xl text-blue-700 mt-3">
             {formatPrice(property.price)}

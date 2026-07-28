@@ -16,6 +16,7 @@ import {
 } from "@expo-google-fonts/plus-jakarta-sans";
 
 import { AuthProvider } from "./src/context/AuthContext";
+import { FavoritesProvider } from "./src/context/FavoritesContext";
 import RootNavigator from "./src/navigation/RootNavigator";
 
 SplashScreen.preventAutoHideAsync();
@@ -42,12 +43,14 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <View className="flex-1" onLayout={onLayoutRootView}>
-          <NavigationContainer>
-            <RootNavigator />
-          </NavigationContainer>
-          <StatusBar style="auto" />
-        </View>
+        <FavoritesProvider>
+          <View className="flex-1" onLayout={onLayoutRootView}>
+            <NavigationContainer>
+              <RootNavigator />
+            </NavigationContainer>
+            <StatusBar style="auto" />
+          </View>
+        </FavoritesProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );
