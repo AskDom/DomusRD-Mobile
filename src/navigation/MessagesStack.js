@@ -1,24 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import PropertyList from "../screens/PropertyList";
-import PropertyDetail from "../screens/PropertyDetail";
+import Mensajes from "../screens/Mensajes";
 import ConversationThread from "../screens/ConversationThread";
 
 const Stack = createNativeStackNavigator();
 
-export default function HomeStack() {
+export default function MessagesStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="PropertyList"
-        component={PropertyList}
-        options={{ title: "DomusRD" }}
-      />
-      <Stack.Screen
-        name="PropertyDetail"
-        component={PropertyDetail}
-        options={{ title: "Detalle" }}
-      />
+      <Stack.Screen name="MessagesList" component={Mensajes} options={{ title: "Mensajes" }} />
       <Stack.Screen
         name="ConversationThread"
         component={ConversationThread}

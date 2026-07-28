@@ -17,6 +17,7 @@ import {
 
 import { AuthProvider } from "./src/context/AuthContext";
 import { FavoritesProvider } from "./src/context/FavoritesContext";
+import { InboxProvider } from "./src/context/InboxContext";
 import RootNavigator from "./src/navigation/RootNavigator";
 
 SplashScreen.preventAutoHideAsync();
@@ -44,12 +45,14 @@ export default function App() {
     <SafeAreaProvider>
       <AuthProvider>
         <FavoritesProvider>
-          <View className="flex-1" onLayout={onLayoutRootView}>
-            <NavigationContainer>
-              <RootNavigator />
-            </NavigationContainer>
-            <StatusBar style="auto" />
-          </View>
+          <InboxProvider>
+            <View className="flex-1" onLayout={onLayoutRootView}>
+              <NavigationContainer>
+                <RootNavigator />
+              </NavigationContainer>
+              <StatusBar style="auto" />
+            </View>
+          </InboxProvider>
         </FavoritesProvider>
       </AuthProvider>
     </SafeAreaProvider>

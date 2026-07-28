@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Favoritos from "../screens/Favoritos";
 import PropertyDetail from "../screens/PropertyDetail";
+import ConversationThread from "../screens/ConversationThread";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,11 @@ export default function FavoritesStack() {
         name="PropertyDetail"
         component={PropertyDetail}
         options={{ title: "Detalle" }}
+      />
+      <Stack.Screen
+        name="ConversationThread"
+        component={ConversationThread}
+        options={({ route }) => ({ title: route.params?.otherName || "Conversación" })}
       />
     </Stack.Navigator>
   );

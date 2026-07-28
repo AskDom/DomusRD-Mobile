@@ -3,11 +3,13 @@ import { View, Text, Image, ScrollView, ActivityIndicator, Pressable } from "rea
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { apiFetch } from "../api/client";
+import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { formatPrice } from "../components/PropertyCard";
 
-export default function PropertyDetail({ route }) {
+export default function PropertyDetail({ route, navigation }) {
   const { id } = route.params;
+  const { currentUser } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -89,6 +91,22 @@ export default function PropertyDetail({ route }) {
               <Text className="font-semibold text-gray-900 mt-1">
                 {property.publishedBy.name}
               </Text>
+
+              {property.publishedBy.id !== currentUser?.id && (
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("ConversationThread", {
+                      otherId: property.publishedBy.id,
+                      otherName: property.publishedBy.name,
+                      propertyId: property.id,
+                      propertyTitle: property.title,
+                    })
+                  }
+                  className="bg-blue-700 rounded-xl py-3 items-center mt-3"
+                >
+                  <Text className="text-white font-semibold">Contactar al vendedor</Text>
+                </Pressable>
+              )}
             </View>
           ) : null}
 
