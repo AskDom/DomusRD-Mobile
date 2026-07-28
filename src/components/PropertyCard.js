@@ -1,39 +1,107 @@
 import { View, Text, Image, Pressable } from "react-native";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { useFavorites } from "../context/FavoritesContext";
+import { typeLabel, statusLabel } from "../utils/propertyLabels";
+import { colors } from "../theme/colors";
 
 export const formatPrice = (price) =>
   `US$${Number(price).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
 
+const STATUS_BG = {
+  Venta: "bg-brand-700",
+  Renta: "bg-emerald-600",
+};
+
 export default function PropertyCard({ property, onPress }) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const favorited = isFavorite(property.id);
+  const status = statusLabel(property.status);
+  const type = typeLabel(property.type);
 
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row bg-white rounded-2xl border border-gray-100 mb-3 overflow-hidden shadow-sm active:opacity-90"
+      className="bg-white rounded-3xl border border-gray-100 mb-4 overflow-hidden shadow-sm active:opacity-95"
     >
-      {property.images?.[0] ? (
-        <Image source={{ uri: property.images[0] }} className="w-28 h-28" />
-      ) : (
-        <View className="w-28 h-28 bg-gray-100" />
-      )}
-      <View className="flex-1 p-3 justify-center">
-        <View className="flex-row items-start justify-between">
-          <Text className="font-semibold text-gray-900 flex-1 pr-2" numberOfLines={1}>
-            {property.title}
-          </Text>
-          <Pressable onPress={() => toggleFavorite(property.id)} hitSlop={8}>
-            <Text className={favorited ? "text-accent-500 text-lg" : "text-gray-300 text-lg"}>
-              {favorited ? "♥" : "♡"}
-            </Text>
-          </Pressable>
+      <View className="relative">
+        {property.images?.[0] ? (
+          <Image source={{ uri: property.images[0] }} className="w-full h-52" />
+        ) : (
+          <View className="w-full h-52 bg-gray-100" />
+        )}
+
+        {/* Badges de status y tipo */}
+        <View className="absolute top-3 left-3 flex-row items-center gap-1.5">
+          {status ? (
+            <View className={`${STATUS_BG[status] || "bg-brand-700"} rounded-full px-2.5 py-1`}>
+              <Text className="text-white text-xs font-bold">{status}</Text>
+            </View>
+          ) : null}
+          {type ? (
+            <View className="bg-white/90 rounded-full px-2.5 py-1">
+              <Text className="text-gray-700 text-xs font-semibold">{type}</Text>
+            </View>
+          ) : null}
         </View>
-        <Text className="text-gray-500 text-sm mt-1" numberOfLines={1}>
-          {property.city}
+
+        {/* Favorito */}
+        <Pressable
+          onPress={() => toggleFavorite(property.id)}
+          hitSlop={8}
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/95 items-center justify-center shadow-sm"
+        >
+          <Ionicons
+            name={favorited ? "heart" : "heart-outline"}
+            size={16}
+            color={favorited ? colors.accent500 : "#374151"}
+          />
+        </Pressable>
+
+        {/* Precio flotante */}
+        <View className="absolute bottom-3 left-3 bg-white/95 rounded-xl px-3 py-1.5 shadow-sm">
+          <Text className="font-extrabold text-gray-900 text-base leading-none">
+            {formatPrice(property.price)}
+          </Text>
+          {status === "Renta" && <Text className="text-gray-400 text-[10px] mt-0.5">/mes</Text>}
+        </View>
+      </View>
+
+      <View className="p-4">
+        <Text className="font-bold text-gray-900 text-sm leading-snug" numberOfLines={2}>
+          {property.title}
         </Text>
-        <Text className="font-extrabold text-brand-700 mt-2">{formatPrice(property.price)}</Text>
+        <View className="flex-row items-center gap-1 mt-1.5">
+          <Ionicons name="location-outline" size={13} color="#9CA3AF" />
+          <Text className="text-gray-400 text-xs">{property.city || "República Dominicana"}</Text>
+        </View>
+
+        <View className="flex-row items-center gap-4 mt-3 pt-3 border-t border-gray-100">
+          {property.rooms != null && (
+            <View className="flex-row items-center gap-1">
+              <Ionicons name="bed-outline" size={14} color="#6B7280" />
+              <Text className="text-gray-500 text-xs">{property.rooms} hab</Text>
+            </View>
+          )}
+          {property.baths != null && (
+            <View className="flex-row items-center gap-1">
+              <MaterialCommunityIcons name="shower" size={14} color="#6B7280" />
+              <Text className="text-gray-500 text-xs">{property.baths} baños</Text>
+            </View>
+          )}
+          {property.parking > 0 && (
+            <View className="flex-row items-center gap-1">
+              <Ionicons name="car-outline" size={14} color="#6B7280" />
+              <Text className="text-gray-500 text-xs">{property.parking}</Text>
+            </View>
+          )}
+          {property.verified && (
+            <View className="ml-auto flex-row items-center gap-1">
+              <Ionicons name="checkmark-circle" size={13} color="#059669" />
+              <Text className="text-emerald-600 text-[10px] font-semibold">Verificada</Text>
+            </View>
+          )}
+        </View>
       </View>
     </Pressable>
   );

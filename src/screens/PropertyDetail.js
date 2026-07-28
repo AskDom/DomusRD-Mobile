@@ -6,7 +6,13 @@ import { apiFetch } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { formatPrice } from "../components/PropertyCard";
+import { typeLabel, statusLabel } from "../utils/propertyLabels";
 import { colors } from "../theme/colors";
+
+const STATUS_BG = {
+  Venta: "bg-brand-700",
+  Renta: "bg-emerald-600",
+};
 
 export default function PropertyDetail({ route, navigation }) {
   const { id } = route.params;
@@ -48,11 +54,26 @@ export default function PropertyDetail({ route, navigation }) {
   return (
     <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
       <ScrollView>
-        {property.images?.[0] ? (
-          <Image source={{ uri: property.images[0] }} className="w-full h-64" />
-        ) : (
-          <View className="w-full h-64 bg-gray-100" />
-        )}
+        <View className="relative">
+          {property.images?.[0] ? (
+            <Image source={{ uri: property.images[0] }} className="w-full h-64" />
+          ) : (
+            <View className="w-full h-64 bg-gray-100" />
+          )}
+
+          <View className="absolute top-3 left-3 flex-row items-center gap-1.5">
+            {statusLabel(property.status) ? (
+              <View className={`${STATUS_BG[statusLabel(property.status)] || "bg-brand-700"} rounded-full px-2.5 py-1`}>
+                <Text className="text-white text-xs font-bold">{statusLabel(property.status)}</Text>
+              </View>
+            ) : null}
+            {typeLabel(property.type) ? (
+              <View className="bg-white/90 rounded-full px-2.5 py-1">
+                <Text className="text-gray-700 text-xs font-semibold">{typeLabel(property.type)}</Text>
+              </View>
+            ) : null}
+          </View>
+        </View>
 
         <View className="p-4">
           <View className="flex-row items-start justify-between">

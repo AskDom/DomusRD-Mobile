@@ -1,39 +1,93 @@
 import { useCallback, useEffect, useState } from "react";
-import { View, Text, FlatList, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, Pressable, ActivityIndicator, TextInput, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 
 import { apiFetch } from "../api/client";
 import PropertyCard from "../components/PropertyCard";
 import { colors } from "../theme/colors";
 
+// Mismos filtros y mismas etiquetas que las tabs de Home.js en el web.
+const TABS = [
+  { label: "Todos", filter: {} },
+  { label: "Apartamentos", filter: { type: "APARTAMENTO" } },
+  { label: "Casas", filter: { type: "CASA" } },
+  { label: "Villas", filter: { type: "VILLA" } },
+  { label: "En Venta", filter: { status: "VENTA" } },
+  { label: "En Renta", filter: { status: "RENTA" } },
+];
+
 export default function PropertyList({ navigation }) {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [query, setQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("Todos");
 
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const data = await apiFetch("/api/properties");
+      const filter = TABS.find((t) => t.label === activeTab)?.filter || {};
+      const params = new URLSearchParams({ ...filter, ...(query.trim() ? { search: query.trim() } : {}) });
+      const data = await apiFetch(`/api/properties?${params.toString()}`);
       setProperties(data.properties);
     } catch (err) {
       setError(err.message || "No se pudieron cargar las propiedades.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [activeTab, query]);
 
+  // Recarga al cambiar de categoría al toque; al escribir, con un pequeño
+  // debounce para no mandar una petición por cada letra.
   useEffect(() => {
-    load();
+    const t = setTimeout(load, 350);
+    return () => clearTimeout(t);
   }, [load]);
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
-      <View className="px-4 pt-4 pb-1">
-        <Text className="font-extrabold text-2xl text-gray-900">Propiedades</Text>
+      <View className="px-4 pt-4 pb-2">
+        <Text className="font-extrabold text-2xl text-gray-900 mb-3">Propiedades</Text>
+
+        <View className="flex-row items-center bg-white border border-gray-200 rounded-2xl px-3.5">
+          <Ionicons name="search-outline" size={18} color="#9CA3AF" />
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Busca por ciudad o sector..."
+            placeholderTextColor="#9CA3AF"
+            returnKeyType="search"
+            onSubmitEditing={load}
+            className="flex-1 px-2.5 py-3 text-gray-900"
+          />
+        </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="mt-3 -mx-4 px-4"
+          contentContainerStyle={{ gap: 8 }}
+        >
+          {TABS.map((tab) => {
+            const active = tab.label === activeTab;
+            return (
+              <Pressable
+                key={tab.label}
+                onPress={() => setActiveTab(tab.label)}
+                className={`px-4 py-2 rounded-full ${active ? "bg-brand-700" : "bg-white border border-gray-200"}`}
+              >
+                <Text className={active ? "text-white font-semibold text-sm" : "text-gray-600 text-sm"}>
+                  {tab.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+
         {!loading && !error && (
-          <Text className="text-gray-500 mt-0.5">
+          <Text className="text-gray-500 mt-3">
             {properties.length} {properties.length === 1 ? "disponible" : "disponibles"}
           </Text>
         )}
@@ -54,13 +108,16 @@ export default function PropertyList({ navigation }) {
         <FlatList
           data={properties}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ padding: 16 }}
+          contentContainerStyle={{ padding: 16, flexGrow: 1 }}
           onRefresh={load}
           refreshing={loading}
           ListEmptyComponent={
-            <Text className="text-center text-gray-500 mt-10">
-              No hay propiedades publicadas todavía.
-            </Text>
+            <View className="flex-1 items-center justify-center px-10 pt-16">
+              <Ionicons name="home-outline" size={40} color="#D1D5DB" />
+              <Text className="text-center text-gray-500 mt-3">
+                No hay propiedades que coincidan con la búsqueda.
+              </Text>
+            </View>
           }
           renderItem={({ item }) => (
             <PropertyCard
