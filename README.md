@@ -40,7 +40,17 @@ src/
 
 ## Stack
 
-- Expo (managed) + React Native, JavaScript
+- Expo SDK 54 (managed) + React Native, JavaScript
 - NativeWind (Tailwind para RN) — misma tipografía y lenguaje visual que la web
 - React Navigation (stack + bottom tabs)
 - expo-secure-store para el JWT
+
+## Por qué SDK 54 y no la última
+
+El paquete `expo` de npm siempre resuelve a la versión más nueva publicada (hoy 57), pero **la app Expo Go que se baja de las tiendas va rezagada** respecto a eso. Antes de tocar la versión de `expo` en `package.json`, confirmá qué SDK corre realmente la Expo Go actual:
+
+```bash
+curl -s https://api.expo.dev/v2/versions/latest | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['expoGoSdkVersion'])"
+```
+
+Si necesitás cambiar de SDK: `npm install expo@<version>` y después `npx expo install --fix` para realinear el resto de los paquetes. Si el árbol de dependencias queda raro después de varios cambios de SDK seguidos, `rm -rf node_modules package-lock.json && npm install` limpio suele arreglarlo.
