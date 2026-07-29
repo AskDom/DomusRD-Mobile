@@ -4,7 +4,8 @@ import {
   Text,
   Image,
   Pressable,
-  FlatList,
+  ScrollView,
+  RefreshControl,
   ActivityIndicator,
   Alert,
 } from "react-native";
@@ -198,10 +199,22 @@ function PerfilScreen({ navigation }) {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
-      <FlatList
-        ListHeaderComponent={
-          <View>
-            {/* Header */}
+      {/*
+        ScrollView simple en vez de FlatList: "mis propiedades" de un
+        vendedor es una lista corta, no necesita virtualización — y la
+        virtualización (VirtualizedList reciclando las celdas) era la causa
+        real del error de navegación: al vaciar `data` al cambiar de
+        pestaña, FlatList desmontaba las celdas con los Pressable de
+        editar/verificar/borrar, y ahí se repetía la misma confusión de
+        NativeWind por posición que ya se había resuelto en el resto de la
+        pantalla. Sin FlatList, no hay celdas que reciclar.
+      */}
+      <ScrollView
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
+        refreshControl={<RefreshControl refreshing={loadingProps} onRefresh={loadMyProperties} />}
+      >
+        <View>
+          {/* Header */}
             <View className="bg-white dark:bg-gray-900 mx-4 mt-4 rounded-3xl border border-gray-100 dark:border-gray-800 p-5 flex-row items-center gap-4">
               <Pressable onPress={handleAvatarPress} className="relative">
                 {currentUser?.avatar ? (
@@ -313,36 +326,32 @@ function PerfilScreen({ navigation }) {
             </View>
 
             <View className={tab === "propiedades" ? undefined : "hidden"}>
-              <View className="px-4">
-                {loadingProps ? (
-                  <View className="items-center py-10">
-                    <ActivityIndicator color={colors.brand700} />
-                  </View>
-                ) : myProperties.length === 0 ? (
-                  <View className="items-center py-10 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
-                    <Text className="text-4xl mb-2">🏚️</Text>
-                    <Text className="text-gray-500 dark:text-gray-400 text-center px-6">
-                      Todavía no publicaste ninguna propiedad.
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
+              {loadingProps ? (
+                <View className="items-center py-10 px-4">
+                  <ActivityIndicator color={colors.brand700} />
+                </View>
+              ) : myProperties.length === 0 ? (
+                <View className="items-center py-10 mx-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
+                  <Text className="text-4xl mb-2">🏚️</Text>
+                  <Text className="text-gray-500 dark:text-gray-400 text-center px-6">
+                    Todavía no publicaste ninguna propiedad.
+                  </Text>
+                </View>
+              ) : (
+                myProperties.map((item) => (
+                  <MyPropertyRow
+                    key={item.id}
+                    property={item}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onVerify={handleVerify}
+                    iconColor={iconColor}
+                  />
+                ))
+              )}
             </View>
-          </View>
-        }
-        data={tab === "propiedades" && !loadingProps ? myProperties : []}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
-        renderItem={({ item }) => (
-          <MyPropertyRow
-            property={item}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onVerify={handleVerify}
-            iconColor={iconColor}
-          />
-        )}
-      />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
