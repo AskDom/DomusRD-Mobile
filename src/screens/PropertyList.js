@@ -51,85 +51,88 @@ export default function PropertyList({ navigation }) {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950" edges={["bottom"]}>
-      <View className="px-4 pt-4 pb-2">
-        <Text className="font-extrabold text-2xl text-gray-900 dark:text-white mb-3">Propiedades</Text>
+      <FlatList
+        data={loading || error ? [] : properties}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ padding: 16, flexGrow: 1 }}
+        onRefresh={load}
+        refreshing={loading}
+        ListHeaderComponent={
+          // Va adentro del FlatList para que se desplace con el scroll en
+          // vez de quedar fijo ocupando pantalla todo el tiempo.
+          <View className="pb-4">
+            <Text className="font-extrabold text-2xl text-gray-900 dark:text-white mb-3">Propiedades</Text>
 
-        <View className="flex-row items-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl px-3.5">
-          <Ionicons name="search-outline" size={18} color={placeholderColor} />
-          <TextInput
-            value={query}
-            onChangeText={setQuery}
-            placeholder="Busca por ciudad o sector..."
-            placeholderTextColor={placeholderColor}
-            returnKeyType="search"
-            onSubmitEditing={load}
-            className="flex-1 px-2.5 py-3 text-gray-900 dark:text-white"
-          />
-        </View>
+            <View className="flex-row items-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl px-3.5">
+              <Ionicons name="search-outline" size={18} color={placeholderColor} />
+              <TextInput
+                value={query}
+                onChangeText={setQuery}
+                placeholder="Busca por ciudad o sector..."
+                placeholderTextColor={placeholderColor}
+                returnKeyType="search"
+                onSubmitEditing={load}
+                className="flex-1 px-2.5 py-3 text-gray-900 dark:text-white"
+              />
+            </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          className="mt-3 -mx-4 px-4"
-          contentContainerStyle={{ gap: 8 }}
-        >
-          {TABS.map((tab) => {
-            const active = tab.label === activeTab;
-            return (
-              <Pressable
-                key={tab.label}
-                onPress={() => setActiveTab(tab.label)}
-                className={`px-4 py-2 rounded-full ${active ? "bg-brand-700" : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700"}`}
-              >
-                <Text className={active ? "text-white font-semibold text-sm" : "text-gray-600 dark:text-gray-300 text-sm"}>
-                  {tab.label}
-                </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className="mt-3"
+              contentContainerStyle={{ gap: 8 }}
+            >
+              {TABS.map((tab) => {
+                const active = tab.label === activeTab;
+                return (
+                  <Pressable
+                    key={tab.label}
+                    onPress={() => setActiveTab(tab.label)}
+                    className={`px-4 py-2 rounded-full ${active ? "bg-brand-700" : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700"}`}
+                  >
+                    <Text className={active ? "text-white font-semibold text-sm" : "text-gray-600 dark:text-gray-300 text-sm"}>
+                      {tab.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+
+            {!loading && !error && (
+              <Text className="text-gray-500 dark:text-gray-400 mt-3">
+                {properties.length} {properties.length === 1 ? "disponible" : "disponibles"}
+              </Text>
+            )}
+          </View>
+        }
+        ListEmptyComponent={
+          loading ? (
+            <View className="items-center justify-center py-16">
+              <ActivityIndicator size="large" color={colors.brand700} />
+            </View>
+          ) : error ? (
+            <View className="items-center justify-center px-6 py-16">
+              <Text className="text-red-600 dark:text-red-400 text-center mb-3">{error}</Text>
+              <Pressable onPress={load}>
+                <Text className="text-brand-700 dark:text-brand-400 font-semibold">Reintentar</Text>
               </Pressable>
-            );
-          })}
-        </ScrollView>
-
-        {!loading && !error && (
-          <Text className="text-gray-500 dark:text-gray-400 mt-3">
-            {properties.length} {properties.length === 1 ? "disponible" : "disponibles"}
-          </Text>
-        )}
-      </View>
-
-      {loading ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color={colors.brand700} />
-        </View>
-      ) : error ? (
-        <View className="flex-1 items-center justify-center px-6">
-          <Text className="text-red-600 dark:text-red-400 text-center mb-3">{error}</Text>
-          <Pressable onPress={load}>
-            <Text className="text-brand-700 dark:text-brand-400 font-semibold">Reintentar</Text>
-          </Pressable>
-        </View>
-      ) : (
-        <FlatList
-          data={properties}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{ padding: 16, flexGrow: 1 }}
-          onRefresh={load}
-          refreshing={loading}
-          ListEmptyComponent={
-            <View className="flex-1 items-center justify-center px-10 pt-16">
+            </View>
+          ) : (
+            <View className="items-center justify-center px-10 py-16">
               <Ionicons name="home-outline" size={40} color={dark ? "#4B5563" : "#D1D5DB"} />
               <Text className="text-center text-gray-500 dark:text-gray-400 mt-3">
                 No hay propiedades que coincidan con la búsqueda.
               </Text>
             </View>
-          }
-          renderItem={({ item }) => (
-            <PropertyCard
-              property={item}
-              onPress={() => navigation.navigate("PropertyDetail", { id: item.id })}
-            />
-          )}
-        />
-      )}
+          )
+        }
+        renderItem={({ item }) => (
+          <PropertyCard
+            property={item}
+            onPress={() => navigation.navigate("PropertyDetail", { id: item.id })}
+          />
+        )}
+      />
     </SafeAreaView>
   );
 }
