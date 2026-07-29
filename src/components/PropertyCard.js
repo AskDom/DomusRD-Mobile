@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { View, Text, Image, Pressable, ScrollView, useWindowDimensions } from "react-native";
+import { View, Text, Pressable, ScrollView, useWindowDimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { useFavorites } from "../context/FavoritesContext";
 import { useTheme } from "../context/ThemeContext";
 import { typeLabel, statusLabel } from "../utils/propertyLabels";
 import { colors } from "../theme/colors";
+import Image from "./Image";
 
 export const formatPrice = (price) =>
   `US$${Number(price).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
@@ -49,7 +50,13 @@ export default function PropertyCard({ property, onPress }) {
         >
           {images.map((uri, i) =>
             uri ? (
-              <Image key={i} source={{ uri }} style={{ width: imageSize, height: imageSize }} />
+              <Image
+                key={i}
+                source={{ uri }}
+                style={{ width: imageSize, height: imageSize }}
+                contentFit="cover"
+                transition={150}
+              />
             ) : (
               <View
                 key={i}

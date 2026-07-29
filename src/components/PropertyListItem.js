@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { useFavorites } from "../context/FavoritesContext";
@@ -6,6 +6,7 @@ import { useTheme } from "../context/ThemeContext";
 import { typeLabel, statusLabel } from "../utils/propertyLabels";
 import { formatPrice } from "./PropertyCard";
 import { colors } from "../theme/colors";
+import Image from "./Image";
 
 // Tarjeta compacta en fila — para listas donde la tarjeta grande de
 // PropertyCard generaría confusión con el feed principal (ej. Favoritos).
@@ -21,7 +22,7 @@ export default function PropertyListItem({ property, onPress }) {
       className="flex-row bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 mb-3 overflow-hidden shadow-sm active:opacity-90"
     >
       {property.images?.[0] ? (
-        <Image source={{ uri: property.images[0] }} className="w-24 h-24" />
+        <Image source={{ uri: property.images[0] }} className="w-24 h-24" contentFit="cover" transition={150} />
       ) : (
         <View className="w-24 h-24 bg-gray-100 dark:bg-gray-800 items-center justify-center">
           <Ionicons name="home-outline" size={22} color={iconColor} />

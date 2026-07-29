@@ -5,7 +5,6 @@ import {
   TextInput,
   Pressable,
   ScrollView,
-  Image,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
@@ -19,6 +18,7 @@ import { apiFetch } from "../api/client";
 import { useTheme } from "../context/ThemeContext";
 import { useToast } from "../context/ToastContext";
 import { colors } from "../theme/colors";
+import Image from "../components/Image";
 
 const TYPES = [
   { value: "APARTAMENTO", label: "Apartamento" },
@@ -347,7 +347,7 @@ export default function Publish({ navigation, route }) {
             <View className="flex-row flex-wrap gap-2">
               {images.map((uri, i) => (
                 <View key={uri} className="relative w-20 h-20">
-                  <Image source={{ uri }} className="w-20 h-20 rounded-xl" />
+                  <Image source={{ uri }} className="w-20 h-20 rounded-xl" contentFit="cover" transition={150} />
                   <Pressable
                     onPress={() => removeImage(i)}
                     className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-900 items-center justify-center"

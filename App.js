@@ -22,12 +22,14 @@ import {
 
 import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
 import { ToastProvider } from "./src/context/ToastContext";
+import { NetworkProvider } from "./src/context/NetworkContext";
 import { AuthProvider } from "./src/context/AuthContext";
 import { SocketProvider } from "./src/context/SocketContext";
 import { FavoritesProvider } from "./src/context/FavoritesContext";
 import { InboxProvider } from "./src/context/InboxContext";
 import RootNavigator from "./src/navigation/RootNavigator";
 import usePushNotifications from "./src/hooks/usePushNotifications";
+import OfflineBanner from "./src/components/OfflineBanner";
 import { colors } from "./src/theme/colors";
 
 SplashScreen.preventAutoHideAsync();
@@ -63,6 +65,7 @@ function AppContent({ onLayoutRootView }) {
               <NavigationContainer ref={navigationRef} theme={dark ? NAV_DARK_THEME : NAV_LIGHT_THEME}>
                 <RootNavigator />
               </NavigationContainer>
+              <OfflineBanner />
               <StatusBar style={dark ? "light" : "dark"} />
             </View>
           </InboxProvider>
@@ -95,7 +98,9 @@ export default function App() {
     <SafeAreaProvider>
       <ThemeProvider>
         <ToastProvider>
-          <AppContent onLayoutRootView={onLayoutRootView} />
+          <NetworkProvider>
+            <AppContent onLayoutRootView={onLayoutRootView} />
+          </NetworkProvider>
         </ToastProvider>
       </ThemeProvider>
     </SafeAreaProvider>

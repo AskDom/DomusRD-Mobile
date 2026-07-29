@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
-  Image,
   Pressable,
   ScrollView,
   RefreshControl,
@@ -21,6 +20,7 @@ import { useToast } from "../context/ToastContext";
 import { formatPrice } from "../components/PropertyCard";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { MyPropertyRowSkeleton } from "../components/Skeleton";
+import Image from "../components/Image";
 import { typeLabel, statusLabel } from "../utils/propertyLabels";
 import { colors } from "../theme/colors";
 
@@ -61,7 +61,7 @@ function MyPropertyRow({ property, onEdit, onDelete, onVerify, iconColor }) {
   return (
     <View className="flex-row bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 mb-3 overflow-hidden shadow-sm">
       {property.images?.[0] ? (
-        <Image source={{ uri: property.images[0] }} className="w-24 h-24" />
+        <Image source={{ uri: property.images[0] }} className="w-24 h-24" contentFit="cover" transition={150} />
       ) : (
         <View className="w-24 h-24 bg-gray-100 dark:bg-gray-800 items-center justify-center">
           <Ionicons name="home-outline" size={24} color={iconColor} />
@@ -229,7 +229,12 @@ function PerfilScreen({ navigation }) {
             <View className="bg-white dark:bg-gray-900 mx-4 mt-4 rounded-3xl border border-gray-100 dark:border-gray-800 p-5 flex-row items-center gap-4">
               <Pressable onPress={handleAvatarPress} className="relative">
                 {currentUser?.avatar ? (
-                  <Image source={{ uri: currentUser.avatar }} className="w-20 h-20 rounded-2xl" />
+                  <Image
+                    source={{ uri: currentUser.avatar }}
+                    className="w-20 h-20 rounded-2xl"
+                    contentFit="cover"
+                    transition={150}
+                  />
                 ) : (
                   <View className={`w-20 h-20 rounded-2xl ${roleBg} items-center justify-center`}>
                     <Text className="text-white font-extrabold text-2xl">{initial}</Text>

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   View,
   Text,
-  Image,
   ScrollView,
   Pressable,
   Linking,
@@ -18,6 +17,7 @@ import { useTheme } from "../context/ThemeContext";
 import { formatPrice } from "../components/PropertyCard";
 import SectionHeader from "../components/SectionHeader";
 import ReviewSection from "../components/ReviewSection";
+import Image from "../components/Image";
 import { PropertyDetailSkeleton } from "../components/Skeleton";
 import { typeLabel, statusLabel } from "../utils/propertyLabels";
 import { colors } from "../theme/colors";
@@ -96,7 +96,13 @@ export default function PropertyDetail({ route, navigation }) {
           >
             {images.map((uri, i) =>
               uri ? (
-                <Image key={i} source={{ uri }} style={{ width, height: galleryHeight }} />
+                <Image
+                  key={i}
+                  source={{ uri }}
+                  style={{ width, height: galleryHeight }}
+                  contentFit="cover"
+                  transition={150}
+                />
               ) : (
                 <View
                   key={i}
