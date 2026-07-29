@@ -270,11 +270,13 @@ export default function Perfil({ navigation }) {
               ))}
             </View>
 
-            {tab === "cuenta" && (
-              <View
-                key="cuenta-tab"
-                className="mx-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-4"
-              >
+            {/* Los dos bloques quedan siempre montados — solo se oculta con
+                estilo (display:none via "hidden") en vez de desmontar con
+                &&. Desmontar/montar en la misma posición del árbol cada vez
+                que se cambia de pestaña es lo que confundía a NativeWind y
+                terminaba tirando "Couldn't find a navigation context". */}
+            <View className={tab === "cuenta" ? undefined : "hidden"}>
+              <View className="mx-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-4">
                 {[
                   { icon: "person-outline", label: "Nombre completo", value: currentUser?.name },
                   { icon: "mail-outline", label: "Correo", value: currentUser?.email },
@@ -299,10 +301,10 @@ export default function Perfil({ navigation }) {
                   </View>
                 ))}
               </View>
-            )}
+            </View>
 
-            {tab === "propiedades" && (
-              <View key="propiedades-tab" className="px-4">
+            <View className={tab === "propiedades" ? undefined : "hidden"}>
+              <View className="px-4">
                 {loadingProps ? (
                   <View className="items-center py-10">
                     <ActivityIndicator color={colors.brand700} />
@@ -316,7 +318,7 @@ export default function Perfil({ navigation }) {
                   </View>
                 ) : null}
               </View>
-            )}
+            </View>
           </View>
         }
         data={tab === "propiedades" && !loadingProps ? myProperties : []}
