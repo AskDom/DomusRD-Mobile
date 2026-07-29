@@ -51,6 +51,12 @@
         {
           "color": "#164060"
         }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "DomusRD usa Face ID para desbloquear la app cuando activás el bloqueo con biometría."
+        }
       ]
     ]
   }

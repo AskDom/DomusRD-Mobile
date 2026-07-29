@@ -23,6 +23,7 @@ import {
 import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
 import { ToastProvider } from "./src/context/ToastContext";
 import { NetworkProvider } from "./src/context/NetworkContext";
+import { BiometricLockProvider } from "./src/context/BiometricLockContext";
 import { AuthProvider } from "./src/context/AuthContext";
 import { SocketProvider } from "./src/context/SocketContext";
 import { FavoritesProvider } from "./src/context/FavoritesContext";
@@ -99,7 +100,9 @@ export default function App() {
       <ThemeProvider>
         <ToastProvider>
           <NetworkProvider>
-            <AppContent onLayoutRootView={onLayoutRootView} />
+            <BiometricLockProvider>
+              <AppContent onLayoutRootView={onLayoutRootView} />
+            </BiometricLockProvider>
           </NetworkProvider>
         </ToastProvider>
       </ThemeProvider>

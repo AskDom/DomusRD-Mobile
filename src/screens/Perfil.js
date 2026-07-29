@@ -7,6 +7,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   Alert,
+  Switch,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
@@ -18,6 +19,7 @@ import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { useTheme } from "../context/ThemeContext";
 import { useToast } from "../context/ToastContext";
+import { useBiometricLock } from "../context/BiometricLockContext";
 import { formatPrice } from "../components/PropertyCard";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { MyPropertyRowSkeleton } from "../components/Skeleton";
@@ -118,6 +120,7 @@ function PerfilScreen({ navigation }) {
   const { favorites } = useFavorites();
   const { dark, toggleDark } = useTheme();
   const { showToast } = useToast();
+  const biometricLock = useBiometricLock();
   const [tab, setTab] = useState("propiedades");
   const [myProperties, setMyProperties] = useState([]);
   const [loadingProps, setLoadingProps] = useState(true);
@@ -356,6 +359,32 @@ function PerfilScreen({ navigation }) {
                   </View>
                 ))}
               </View>
+
+              {biometricLock.available && (
+                <View className="mx-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-4">
+                  <View className="flex-row items-center justify-between px-4 py-3.5">
+                    <View className="flex-row items-center gap-3 flex-1 pr-3">
+                      <View className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-800 items-center justify-center">
+                        <Ionicons name="finger-print-outline" size={16} color={iconColor} />
+                      </View>
+                      <View className="flex-1">
+                        <Text className="text-sm font-semibold text-gray-900 dark:text-white">
+                          Bloquear con Face ID / huella
+                        </Text>
+                        <Text className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                          Pide biometría cada vez que volvés a abrir la app.
+                        </Text>
+                      </View>
+                    </View>
+                    <Switch
+                      value={biometricLock.enabled}
+                      onValueChange={biometricLock.setEnabled}
+                      trackColor={{ false: colors.gray300, true: colors.brand700 }}
+                      thumbColor="#ffffff"
+                    />
+                  </View>
+                </View>
+              )}
             </View>
 
             {/* Mismo motivo que arriba: los tres estados (cargando/vacío/
