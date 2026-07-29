@@ -16,9 +16,9 @@ export default function Mensajes({ navigation }) {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
       <View className="px-4 pt-4 pb-1">
-        <Text className="font-extrabold text-2xl text-gray-900">Mensajes</Text>
+        <Text className="font-extrabold text-2xl text-gray-900 dark:text-white">Mensajes</Text>
       </View>
 
       <FlatList
@@ -28,7 +28,7 @@ export default function Mensajes({ navigation }) {
         ListEmptyComponent={
           <View className="flex-1 items-center justify-center px-10 pt-16">
             <Text className="text-5xl mb-3">💬</Text>
-            <Text className="text-center text-gray-500">
+            <Text className="text-center text-gray-500 dark:text-gray-400">
               No tenés conversaciones todavía. Escribile a un vendedor desde el detalle de una
               propiedad.
             </Text>
@@ -47,7 +47,7 @@ export default function Mensajes({ navigation }) {
                   propertyTitle: item.propertyTitle,
                 })
               }
-              className="flex-row bg-white rounded-2xl border border-gray-100 p-4 mb-3 shadow-sm active:opacity-90"
+              className="flex-row bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4 mb-3 shadow-sm active:opacity-90"
             >
               <View className="w-11 h-11 rounded-full bg-brand-700 items-center justify-center mr-3">
                 <Text className="text-white font-bold">{initial}</Text>
@@ -55,7 +55,7 @@ export default function Mensajes({ navigation }) {
 
               <View className="flex-1">
                 <View className="flex-row items-center justify-between">
-                  <Text className="font-semibold text-gray-900 flex-1 pr-2" numberOfLines={1}>
+                  <Text className="font-semibold text-gray-900 dark:text-white flex-1 pr-2" numberOfLines={1}>
                     {item.otherName}
                   </Text>
                   {item.unread > 0 && (
@@ -64,10 +64,10 @@ export default function Mensajes({ navigation }) {
                     </View>
                   )}
                 </View>
-                <Text className="text-gray-500 text-xs mt-0.5" numberOfLines={1}>
+                <Text className="text-gray-500 dark:text-gray-400 text-xs mt-0.5" numberOfLines={1}>
                   {item.propertyTitle}
                 </Text>
-                <Text className="text-gray-700 mt-1" numberOfLines={1}>
+                <Text className="text-gray-700 dark:text-gray-300 mt-1" numberOfLines={1}>
                   {last?.text}
                 </Text>
               </View>

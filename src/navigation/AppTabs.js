@@ -5,9 +5,10 @@ import HomeStack from "./HomeStack";
 import FavoritesStack from "./FavoritesStack";
 import MessagesStack from "./MessagesStack";
 import PublishStack from "./PublishStack";
-import Perfil from "../screens/Perfil";
+import PerfilStack from "./PerfilStack";
 import { useAuth } from "../context/AuthContext";
 import { useInbox } from "../context/InboxContext";
+import { useTheme } from "../context/ThemeContext";
 import { colors } from "../theme/colors";
 
 const Tab = createBottomTabNavigator();
@@ -25,6 +26,7 @@ const CAN_PUBLISH_ROLES = ["Vendedor", "Agente", "Admin"];
 export default function AppTabs() {
   const { currentUser } = useAuth();
   const { getConversations } = useInbox();
+  const { dark } = useTheme();
   const unreadTotal = getConversations().reduce((sum, c) => sum + c.unread, 0);
   const canPublish = CAN_PUBLISH_ROLES.includes(currentUser?.role);
 
@@ -32,8 +34,12 @@ export default function AppTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: colors.brand700,
+        tabBarActiveTintColor: dark ? colors.brand400 : colors.brand700,
         tabBarInactiveTintColor: colors.gray400,
+        tabBarStyle: {
+          backgroundColor: dark ? "#111827" : "#ffffff",
+          borderTopColor: dark ? "#1F2937" : "#E5E7EB",
+        },
         tabBarIcon: ({ color, size, focused }) => (
           <Ionicons
             name={focused ? ICONS[route.name] : `${ICONS[route.name]}-outline`}
@@ -54,7 +60,7 @@ export default function AppTabs() {
           tabBarBadgeStyle: { backgroundColor: colors.accent500 },
         }}
       />
-      <Tab.Screen name="Perfil" component={Perfil} />
+      <Tab.Screen name="Perfil" component={PerfilStack} />
     </Tab.Navigator>
   );
 }

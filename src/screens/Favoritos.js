@@ -28,9 +28,9 @@ export default function Favoritos({ navigation }) {
   }, [load]);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950" edges={["bottom"]}>
       <View className="px-4 pt-4 pb-1">
-        <Text className="font-extrabold text-2xl text-gray-900">Favoritos</Text>
+        <Text className="font-extrabold text-2xl text-gray-900 dark:text-white">Favoritos</Text>
       </View>
 
       {loading ? (
@@ -47,7 +47,7 @@ export default function Favoritos({ navigation }) {
           ListEmptyComponent={
             <View className="flex-1 items-center justify-center px-10 pt-16">
               <Text className="text-5xl mb-3">♡</Text>
-              <Text className="text-center text-gray-500">
+              <Text className="text-center text-gray-500 dark:text-gray-400">
                 Todavía no marcaste ninguna propiedad como favorita.
               </Text>
             </View>

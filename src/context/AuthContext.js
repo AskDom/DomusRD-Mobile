@@ -85,6 +85,22 @@ export function AuthProvider({ children }) {
     setCurrentUser(null);
   }, []);
 
+  // asset: { uri, name, type } tal como lo entrega expo-image-picker.
+  const updateAvatar = useCallback(async (asset) => {
+    setError("");
+    try {
+      const formData = new FormData();
+      formData.append("avatar", { uri: asset.uri, name: asset.name, type: asset.type });
+      const data = await apiFetch("/api/auth/avatar", { method: "POST", body: formData });
+      const user = normalizeUser(data.user);
+      setCurrentUser(user);
+      return user;
+    } catch (err) {
+      setError(err.message || "No se pudo actualizar la foto de perfil.");
+      return false;
+    }
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -92,6 +108,7 @@ export function AuthProvider({ children }) {
         login,
         register,
         logout,
+        updateAvatar,
         error,
         setError,
         loading,

@@ -3,40 +3,45 @@ import { View, Text, TextInput, Pressable, ActivityIndicator } from "react-nativ
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function Login({ navigation }) {
   const { login, error, loading } = useAuth();
+  const { dark } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const placeholderColor = dark ? "#6B7280" : "#9CA3AF";
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white dark:bg-gray-950">
       <View className="flex-1 justify-center px-6">
-        <Text className="font-extrabold text-4xl text-brand-700">DomusRD</Text>
-        <Text className="text-gray-500 mb-10 mt-1">Portal inmobiliario dominicano</Text>
+        <Text className="font-extrabold text-4xl text-brand-700 dark:text-brand-400">DomusRD</Text>
+        <Text className="text-gray-500 dark:text-gray-400 mb-10 mt-1">
+          Portal inmobiliario dominicano
+        </Text>
 
-        <Text className="font-medium text-sm text-gray-700 mb-1.5">Correo</Text>
+        <Text className="font-medium text-sm text-gray-700 dark:text-gray-300 mb-1.5">Correo</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
-          className="bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 mb-4 text-gray-900"
-          placeholderTextColor="#9CA3AF"
+          className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3.5 mb-4 text-gray-900 dark:text-white"
+          placeholderTextColor={placeholderColor}
           placeholder="tucorreo@ejemplo.com"
         />
 
-        <Text className="font-medium text-sm text-gray-700 mb-1.5">Contraseña</Text>
+        <Text className="font-medium text-sm text-gray-700 dark:text-gray-300 mb-1.5">Contraseña</Text>
         <TextInput
           value={password}
           onChangeText={setPassword}
           secureTextEntry
-          className="bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 mb-4 text-gray-900"
-          placeholderTextColor="#9CA3AF"
+          className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3.5 mb-4 text-gray-900 dark:text-white"
+          placeholderTextColor={placeholderColor}
           placeholder="••••••••"
         />
 
-        {error ? <Text className="text-red-600 mb-4">{error}</Text> : null}
+        {error ? <Text className="text-red-600 dark:text-red-400 mb-4">{error}</Text> : null}
 
         <Pressable
           onPress={() => login({ email, password })}
@@ -51,8 +56,9 @@ export default function Login({ navigation }) {
         </Pressable>
 
         <Pressable onPress={() => navigation.navigate("Register")}>
-          <Text className="text-center text-gray-600">
-            ¿No tenés cuenta? <Text className="font-semibold text-brand-700">Regístrate</Text>
+          <Text className="text-center text-gray-600 dark:text-gray-400">
+            ¿No tenés cuenta?{" "}
+            <Text className="font-semibold text-brand-700 dark:text-brand-400">Regístrate</Text>
           </Text>
         </Pressable>
       </View>

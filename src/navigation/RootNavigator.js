@@ -10,7 +10,7 @@ export default function RootNavigator() {
 
   if (bootstrapping) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
+      <View className="flex-1 items-center justify-center bg-white dark:bg-gray-950">
         <ActivityIndicator size="large" color={colors.brand700} />
       </View>
     );

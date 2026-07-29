@@ -16,6 +16,7 @@ import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
 
 import { apiFetch } from "../api/client";
+import { useTheme } from "../context/ThemeContext";
 import { colors } from "../theme/colors";
 
 const TYPES = [
@@ -32,27 +33,36 @@ const STATUSES = [
 function Field({ label, children }) {
   return (
     <View className="mb-4">
-      <Text className="font-medium text-sm text-gray-700 mb-1.5">{label}</Text>
+      <Text className="font-medium text-sm text-gray-700 dark:text-gray-300 mb-1.5">{label}</Text>
       {children}
     </View>
   );
 }
 
-const inputClass = "bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 text-gray-900";
+const inputClass =
+  "bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3.5 text-gray-900 dark:text-white";
 
-export default function Publish({ navigation }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [city, setCity] = useState("");
-  const [rooms, setRooms] = useState("1");
-  const [baths, setBaths] = useState("1");
-  const [parking, setParking] = useState("0");
-  const [type, setType] = useState("APARTAMENTO");
-  const [status, setStatus] = useState("VENTA");
-  const [images, setImages] = useState([]);
+export default function Publish({ navigation, route }) {
+  const { dark } = useTheme();
+  const placeholderColor = dark ? "#6B7280" : "#9CA3AF";
+  // Si viene una propiedad por params, esta pantalla edita en vez de crear
+  // — mismo formulario para las dos cosas, para no duplicar todo esto.
+  const editing = route?.params?.property || null;
+
+  const [title, setTitle] = useState(editing?.title || "");
+  const [description, setDescription] = useState(editing?.description || "");
+  const [price, setPrice] = useState(editing ? String(editing.price) : "");
+  const [city, setCity] = useState(editing?.city || "");
+  const [rooms, setRooms] = useState(editing ? String(editing.rooms ?? 1) : "1");
+  const [baths, setBaths] = useState(editing ? String(editing.baths ?? 1) : "1");
+  const [parking, setParking] = useState(editing ? String(editing.parking ?? 0) : "0");
+  const [type, setType] = useState(editing?.type || "APARTAMENTO");
+  const [status, setStatus] = useState(editing?.status || "VENTA");
+  const [images, setImages] = useState(editing?.images || []);
   const [uploadingImages, setUploadingImages] = useState(false);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState(
+    editing?.lat != null ? { lat: editing.lat, lng: editing.lng } : null
+  );
   const [locating, setLocating] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -146,29 +156,39 @@ export default function Publish({ navigation }) {
       return;
     }
 
+    const payload = {
+      title: title.trim(),
+      description: description.trim(),
+      price: Number(price),
+      city: city.trim(),
+      lat: location.lat,
+      lng: location.lng,
+      rooms: Number(rooms) || 1,
+      baths: Number(baths) || 1,
+      parking: Number(parking) || 0,
+      type,
+      status,
+      images,
+    };
+
     setSubmitting(true);
     try {
-      const data = await apiFetch("/api/properties", {
-        method: "POST",
-        body: JSON.stringify({
-          title: title.trim(),
-          description: description.trim(),
-          price: Number(price),
-          city: city.trim(),
-          lat: location.lat,
-          lng: location.lng,
-          rooms: Number(rooms) || 1,
-          baths: Number(baths) || 1,
-          parking: Number(parking) || 0,
-          type,
-          status,
-          images,
-        }),
-      });
-      resetForm();
-      navigation.navigate("PropertyDetail", { id: data.property.id });
+      if (editing) {
+        await apiFetch(`/api/properties/${editing.id}`, {
+          method: "PUT",
+          body: JSON.stringify(payload),
+        });
+        navigation.goBack();
+      } else {
+        const data = await apiFetch("/api/properties", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+        resetForm();
+        navigation.navigate("PropertyDetail", { id: data.property.id });
+      }
     } catch (err) {
-      setError(err.message || "No se pudo publicar la propiedad.");
+      setError(err.message || "No se pudo guardar la propiedad.");
     } finally {
       setSubmitting(false);
     }
@@ -176,13 +196,17 @@ export default function Publish({ navigation }) {
 
   return (
     <KeyboardAvoidingView className="flex-1" behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
+      <SafeAreaView className="flex-1 bg-white dark:bg-gray-950" edges={["bottom"]}>
         <ScrollView contentContainerStyle={{ padding: 20 }} keyboardShouldPersistTaps="handled">
-          <Text className="font-extrabold text-2xl text-gray-900 mb-1">Publicar propiedad</Text>
-          <Text className="text-gray-500 mb-6">Completá los datos para publicarla en DomusRD</Text>
+          <Text className="font-extrabold text-2xl text-gray-900 dark:text-white mb-1">
+            {editing ? "Editar propiedad" : "Publicar propiedad"}
+          </Text>
+          <Text className="text-gray-500 dark:text-gray-400 mb-6">
+            {editing ? "Actualizá los datos de tu propiedad" : "Completá los datos para publicarla en DomusRD"}
+          </Text>
 
           <Field label="Título">
-            <TextInput value={title} onChangeText={setTitle} className={inputClass} placeholder="Apartamento amplio en Piantini" placeholderTextColor="#9CA3AF" />
+            <TextInput value={title} onChangeText={setTitle} className={inputClass} placeholder="Apartamento amplio en Piantini" placeholderTextColor={placeholderColor} />
           </Field>
 
           <Field label="Descripción">
@@ -191,7 +215,7 @@ export default function Publish({ navigation }) {
               onChangeText={setDescription}
               className={inputClass}
               placeholder="Describí la propiedad..."
-              placeholderTextColor="#9CA3AF"
+              placeholderTextColor={placeholderColor}
               multiline
               numberOfLines={4}
               style={{ minHeight: 100, textAlignVertical: "top" }}
@@ -199,24 +223,24 @@ export default function Publish({ navigation }) {
           </Field>
 
           <Field label="Precio (US$)">
-            <TextInput value={price} onChangeText={setPrice} className={inputClass} placeholder="150000" placeholderTextColor="#9CA3AF" keyboardType="numeric" />
+            <TextInput value={price} onChangeText={setPrice} className={inputClass} placeholder="150000" placeholderTextColor={placeholderColor} keyboardType="numeric" />
           </Field>
 
           <Field label="Ciudad">
-            <TextInput value={city} onChangeText={setCity} className={inputClass} placeholder="Santo Domingo" placeholderTextColor="#9CA3AF" />
+            <TextInput value={city} onChangeText={setCity} className={inputClass} placeholder="Santo Domingo" placeholderTextColor={placeholderColor} />
           </Field>
 
           <View className="flex-row gap-3 mb-4">
             <View className="flex-1">
-              <Text className="font-medium text-sm text-gray-700 mb-1.5">Hab.</Text>
+              <Text className="font-medium text-sm text-gray-700 dark:text-gray-300 mb-1.5">Hab.</Text>
               <TextInput value={rooms} onChangeText={setRooms} className={inputClass} keyboardType="numeric" />
             </View>
             <View className="flex-1">
-              <Text className="font-medium text-sm text-gray-700 mb-1.5">Baños</Text>
+              <Text className="font-medium text-sm text-gray-700 dark:text-gray-300 mb-1.5">Baños</Text>
               <TextInput value={baths} onChangeText={setBaths} className={inputClass} keyboardType="numeric" />
             </View>
             <View className="flex-1">
-              <Text className="font-medium text-sm text-gray-700 mb-1.5">Parqueos</Text>
+              <Text className="font-medium text-sm text-gray-700 dark:text-gray-300 mb-1.5">Parqueos</Text>
               <TextInput value={parking} onChangeText={setParking} className={inputClass} keyboardType="numeric" />
             </View>
           </View>
@@ -227,9 +251,9 @@ export default function Publish({ navigation }) {
                 <Pressable
                   key={t.value}
                   onPress={() => setType(t.value)}
-                  className={`px-4 py-2 rounded-full ${type === t.value ? "bg-brand-700" : "bg-gray-100"}`}
+                  className={`px-4 py-2 rounded-full ${type === t.value ? "bg-brand-700" : "bg-gray-100 dark:bg-gray-800"}`}
                 >
-                  <Text className={type === t.value ? "text-white font-semibold text-sm" : "text-gray-600 text-sm"}>
+                  <Text className={type === t.value ? "text-white font-semibold text-sm" : "text-gray-600 dark:text-gray-300 text-sm"}>
                     {t.label}
                   </Text>
                 </Pressable>
@@ -243,9 +267,9 @@ export default function Publish({ navigation }) {
                 <Pressable
                   key={s.value}
                   onPress={() => setStatus(s.value)}
-                  className={`px-4 py-2 rounded-full ${status === s.value ? "bg-brand-700" : "bg-gray-100"}`}
+                  className={`px-4 py-2 rounded-full ${status === s.value ? "bg-brand-700" : "bg-gray-100 dark:bg-gray-800"}`}
                 >
-                  <Text className={status === s.value ? "text-white font-semibold text-sm" : "text-gray-600 text-sm"}>
+                  <Text className={status === s.value ? "text-white font-semibold text-sm" : "text-gray-600 dark:text-gray-300 text-sm"}>
                     {s.label}
                   </Text>
                 </Pressable>
@@ -258,7 +282,9 @@ export default function Publish({ navigation }) {
               onPress={useCurrentLocation}
               disabled={locating}
               className={`flex-row items-center justify-center gap-2 rounded-2xl py-3.5 border ${
-                location ? "bg-emerald-50 border-emerald-200" : "bg-gray-50 border-gray-200"
+                location
+                  ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800"
+                  : "bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700"
               }`}
             >
               {locating ? (
@@ -268,9 +294,15 @@ export default function Publish({ navigation }) {
                   <Ionicons
                     name={location ? "checkmark-circle" : "location-outline"}
                     size={18}
-                    color={location ? "#059669" : "#374151"}
+                    color={location ? "#059669" : dark ? "#D1D5DB" : "#374151"}
                   />
-                  <Text className={location ? "text-emerald-700 font-medium" : "text-gray-700 font-medium"}>
+                  <Text
+                    className={
+                      location
+                        ? "text-emerald-700 dark:text-emerald-400 font-medium"
+                        : "text-gray-700 dark:text-gray-300 font-medium"
+                    }
+                  >
                     {location
                       ? `Ubicación marcada — ${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`
                       : "Usar mi ubicación actual"}
@@ -297,26 +329,32 @@ export default function Publish({ navigation }) {
                 <Pressable
                   onPress={pickImages}
                   disabled={uploadingImages}
-                  className="w-20 h-20 rounded-xl bg-gray-50 border border-dashed border-gray-300 items-center justify-center"
+                  className="w-20 h-20 rounded-xl bg-gray-50 dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-700 items-center justify-center"
                 >
                   {uploadingImages ? (
                     <ActivityIndicator color={colors.brand700} />
                   ) : (
-                    <Ionicons name="add" size={22} color="#9CA3AF" />
+                    <Ionicons name="add" size={22} color={placeholderColor} />
                   )}
                 </Pressable>
               )}
             </View>
           </Field>
 
-          {error ? <Text className="text-red-600 mb-4">{error}</Text> : null}
+          {error ? <Text className="text-red-600 dark:text-red-400 mb-4">{error}</Text> : null}
 
           <Pressable
             onPress={handleSubmit}
             disabled={submitting}
             className="bg-brand-700 rounded-2xl py-4 items-center mt-2 shadow-sm active:bg-brand-800 disabled:opacity-60"
           >
-            {submitting ? <ActivityIndicator color="#fff" /> : <Text className="font-semibold text-white text-base">Publicar propiedad</Text>}
+            {submitting ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text className="font-semibold text-white text-base">
+                {editing ? "Guardar cambios" : "Publicar propiedad"}
+              </Text>
+            )}
           </Pressable>
         </ScrollView>
       </SafeAreaView>

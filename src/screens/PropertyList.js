@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { apiFetch } from "../api/client";
 import PropertyCard from "../components/PropertyCard";
+import { useTheme } from "../context/ThemeContext";
 import { colors } from "../theme/colors";
 
 // Mismos filtros y mismas etiquetas que las tabs de Home.js en el web.
@@ -18,6 +19,8 @@ const TABS = [
 ];
 
 export default function PropertyList({ navigation }) {
+  const { dark } = useTheme();
+  const placeholderColor = dark ? "#6B7280" : "#9CA3AF";
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -47,20 +50,20 @@ export default function PropertyList({ navigation }) {
   }, [load]);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950" edges={["bottom"]}>
       <View className="px-4 pt-4 pb-2">
-        <Text className="font-extrabold text-2xl text-gray-900 mb-3">Propiedades</Text>
+        <Text className="font-extrabold text-2xl text-gray-900 dark:text-white mb-3">Propiedades</Text>
 
-        <View className="flex-row items-center bg-white border border-gray-200 rounded-2xl px-3.5">
-          <Ionicons name="search-outline" size={18} color="#9CA3AF" />
+        <View className="flex-row items-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl px-3.5">
+          <Ionicons name="search-outline" size={18} color={placeholderColor} />
           <TextInput
             value={query}
             onChangeText={setQuery}
             placeholder="Busca por ciudad o sector..."
-            placeholderTextColor="#9CA3AF"
+            placeholderTextColor={placeholderColor}
             returnKeyType="search"
             onSubmitEditing={load}
-            className="flex-1 px-2.5 py-3 text-gray-900"
+            className="flex-1 px-2.5 py-3 text-gray-900 dark:text-white"
           />
         </View>
 
@@ -76,9 +79,9 @@ export default function PropertyList({ navigation }) {
               <Pressable
                 key={tab.label}
                 onPress={() => setActiveTab(tab.label)}
-                className={`px-4 py-2 rounded-full ${active ? "bg-brand-700" : "bg-white border border-gray-200"}`}
+                className={`px-4 py-2 rounded-full ${active ? "bg-brand-700" : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700"}`}
               >
-                <Text className={active ? "text-white font-semibold text-sm" : "text-gray-600 text-sm"}>
+                <Text className={active ? "text-white font-semibold text-sm" : "text-gray-600 dark:text-gray-300 text-sm"}>
                   {tab.label}
                 </Text>
               </Pressable>
@@ -87,7 +90,7 @@ export default function PropertyList({ navigation }) {
         </ScrollView>
 
         {!loading && !error && (
-          <Text className="text-gray-500 mt-3">
+          <Text className="text-gray-500 dark:text-gray-400 mt-3">
             {properties.length} {properties.length === 1 ? "disponible" : "disponibles"}
           </Text>
         )}
@@ -99,9 +102,9 @@ export default function PropertyList({ navigation }) {
         </View>
       ) : error ? (
         <View className="flex-1 items-center justify-center px-6">
-          <Text className="text-red-600 text-center mb-3">{error}</Text>
+          <Text className="text-red-600 dark:text-red-400 text-center mb-3">{error}</Text>
           <Pressable onPress={load}>
-            <Text className="text-brand-700 font-semibold">Reintentar</Text>
+            <Text className="text-brand-700 dark:text-brand-400 font-semibold">Reintentar</Text>
           </Pressable>
         </View>
       ) : (
@@ -113,8 +116,8 @@ export default function PropertyList({ navigation }) {
           refreshing={loading}
           ListEmptyComponent={
             <View className="flex-1 items-center justify-center px-10 pt-16">
-              <Ionicons name="home-outline" size={40} color="#D1D5DB" />
-              <Text className="text-center text-gray-500 mt-3">
+              <Ionicons name="home-outline" size={40} color={dark ? "#4B5563" : "#D1D5DB"} />
+              <Text className="text-center text-gray-500 dark:text-gray-400 mt-3">
                 No hay propiedades que coincidan con la búsqueda.
               </Text>
             </View>
