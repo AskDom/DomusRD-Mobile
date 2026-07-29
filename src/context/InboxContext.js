@@ -92,7 +92,15 @@ export function InboxProvider({ children }) {
           body: JSON.stringify({ toId, propertyId, text, replyToId }),
         });
         const real = normalize(data.message);
-        setMessages((prev) => prev.map((m) => (m.id === tempId ? real : m)));
+        // El backend emite "message_sent" por socket ANTES de responder el
+        // POST, así que a veces el socket ya insertó `real` en el estado
+        // acá abajo mientras este await seguía esperando la respuesta HTTP.
+        // Con un simple .map por tempId, esa inserción del socket queda
+        // intacta Y además se agrega una segunda copia de `real` acá,
+        // duplicando el mensaje solo del lado del emisor. Filtrando por
+        // tempId Y por real.id antes de anteponer, sirve sin importar cuál
+        // de los dos (socket o HTTP) llegó primero.
+        setMessages((prev) => [real, ...prev.filter((m) => m.id !== tempId && m.id !== real.id)]);
         return real;
       } catch (err) {
         setMessages((prev) => prev.filter((m) => m.id !== tempId));
