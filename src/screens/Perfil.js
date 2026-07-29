@@ -6,7 +6,6 @@ import {
   Pressable,
   FlatList,
   ActivityIndicator,
-  Switch,
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -224,9 +223,18 @@ export default function Perfil({ navigation }) {
                 </View>
               </View>
 
-              <Pressable onPress={logout} hitSlop={8}>
-                <Ionicons name="log-out-outline" size={20} color="#EF4444" />
-              </Pressable>
+              <View className="items-center gap-4">
+                <Pressable onPress={toggleDark} hitSlop={8}>
+                  <Ionicons
+                    name={dark ? "moon" : "sunny-outline"}
+                    size={20}
+                    color={dark ? colors.brand400 : "#6B7280"}
+                  />
+                </Pressable>
+                <Pressable onPress={logout} hitSlop={8}>
+                  <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+                </Pressable>
+              </View>
             </View>
 
             {/* Stats */}
@@ -269,10 +277,12 @@ export default function Perfil({ navigation }) {
                   { icon: "mail-outline", label: "Correo", value: currentUser?.email },
                   { icon: "pricetag-outline", label: "Tipo de cuenta", value: currentUser?.role },
                   { icon: "key-outline", label: "ID de usuario", value: `${currentUser?.id?.slice(0, 8)}...` },
-                ].map((item) => (
+                ].map((item, i, arr) => (
                   <View
                     key={item.label}
-                    className="flex-row items-center justify-between px-4 py-3.5 border-b border-gray-50 dark:border-gray-800"
+                    className={`flex-row items-center justify-between px-4 py-3.5 ${
+                      i < arr.length - 1 ? "border-b border-gray-50 dark:border-gray-800" : ""
+                    }`}
                   >
                     <View className="flex-row items-center gap-3">
                       <View className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-800 items-center justify-center">
@@ -285,21 +295,6 @@ export default function Perfil({ navigation }) {
                     </Text>
                   </View>
                 ))}
-
-                <View className="flex-row items-center justify-between px-4 py-3.5">
-                  <View className="flex-row items-center gap-3">
-                    <View className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-800 items-center justify-center">
-                      <Ionicons name={dark ? "moon" : "sunny-outline"} size={15} color={iconColor} />
-                    </View>
-                    <Text className="text-sm text-gray-500 dark:text-gray-400">Modo oscuro</Text>
-                  </View>
-                  <Switch
-                    value={dark}
-                    onValueChange={toggleDark}
-                    trackColor={{ false: "#D1D5DB", true: colors.brand700 }}
-                    thumbColor="#ffffff"
-                  />
-                </View>
               </View>
             )}
 
