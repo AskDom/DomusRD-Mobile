@@ -16,6 +16,7 @@ import {
 } from "@expo-google-fonts/plus-jakarta-sans";
 
 import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
+import { ToastProvider } from "./src/context/ToastContext";
 import { AuthProvider } from "./src/context/AuthContext";
 import { FavoritesProvider } from "./src/context/FavoritesContext";
 import { InboxProvider } from "./src/context/InboxContext";
@@ -74,7 +75,9 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <AppContent onLayoutRootView={onLayoutRootView} />
+        <ToastProvider>
+          <AppContent onLayoutRootView={onLayoutRootView} />
+        </ToastProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

@@ -17,6 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { apiFetch } from "../api/client";
 import { useTheme } from "../context/ThemeContext";
+import { useToast } from "../context/ToastContext";
 import { colors } from "../theme/colors";
 
 const TYPES = [
@@ -44,6 +45,7 @@ const inputClass =
 
 export default function Publish({ navigation, route }) {
   const { dark } = useTheme();
+  const { showToast } = useToast();
   const placeholderColor = dark ? "#6B7280" : "#9CA3AF";
   // Si viene una propiedad por params, esta pantalla edita en vez de crear
   // — mismo formulario para las dos cosas, para no duplicar todo esto.
@@ -179,6 +181,7 @@ export default function Publish({ navigation, route }) {
           body: JSON.stringify(payload),
         });
         navigation.goBack();
+        showToast("Propiedad actualizada", "success");
       } else {
         const data = await apiFetch("/api/properties", {
           method: "POST",
@@ -186,6 +189,7 @@ export default function Publish({ navigation, route }) {
         });
         resetForm();
         navigation.navigate("PropertyDetail", { id: data.property.id });
+        showToast("Propiedad publicada", "success");
       }
     } catch (err) {
       setError(err.message || "No se pudo guardar la propiedad.");

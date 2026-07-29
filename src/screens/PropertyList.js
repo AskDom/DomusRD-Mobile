@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { apiFetch } from "../api/client";
 import PropertyCard from "../components/PropertyCard";
 import PropertyMap from "../components/PropertyMap";
+import { PropertyListSkeleton } from "../components/Skeleton";
 import { useTheme } from "../context/ThemeContext";
 import { colors } from "../theme/colors";
 
@@ -178,9 +179,7 @@ export default function PropertyList({ navigation }) {
         }
         ListEmptyComponent={
           loading ? (
-            <View className="items-center justify-center py-16">
-              <ActivityIndicator size="large" color={colors.brand700} />
-            </View>
+            <PropertyListSkeleton />
           ) : error ? (
             <View className="items-center justify-center px-6 py-16">
               <Text className="text-red-600 dark:text-red-400 text-center mb-3">{error}</Text>

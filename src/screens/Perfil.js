@@ -17,8 +17,10 @@ import { apiFetch } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { useTheme } from "../context/ThemeContext";
+import { useToast } from "../context/ToastContext";
 import { formatPrice } from "../components/PropertyCard";
 import ErrorBoundary from "../components/ErrorBoundary";
+import { MyPropertyRowSkeleton } from "../components/Skeleton";
 import { typeLabel, statusLabel } from "../utils/propertyLabels";
 import { colors } from "../theme/colors";
 
@@ -114,6 +116,7 @@ function PerfilScreen({ navigation }) {
   const { currentUser, logout, updateAvatar } = useAuth();
   const { favorites } = useFavorites();
   const { dark, toggleDark } = useTheme();
+  const { showToast } = useToast();
   const [tab, setTab] = useState("propiedades");
   const [myProperties, setMyProperties] = useState([]);
   const [loadingProps, setLoadingProps] = useState(true);
@@ -159,12 +162,16 @@ function PerfilScreen({ navigation }) {
 
     const asset = result.assets[0];
     setUploadingAvatar(true);
-    await updateAvatar({
+    const updated = await updateAvatar({
       uri: asset.uri,
       name: asset.fileName || `avatar-${Date.now()}.jpg`,
       type: asset.mimeType || "image/jpeg",
     });
     setUploadingAvatar(false);
+    showToast(
+      updated ? "Foto de perfil actualizada" : "No se pudo actualizar la foto de perfil.",
+      updated ? "success" : "error"
+    );
   };
 
   const handleEdit = (property) => navigation.navigate("Publish", { property });
@@ -179,8 +186,9 @@ function PerfilScreen({ navigation }) {
           try {
             await apiFetch(`/api/properties/${property.id}`, { method: "DELETE" });
             setMyProperties((prev) => prev.filter((p) => p.id !== property.id));
+            showToast("Propiedad eliminada", "success");
           } catch (err) {
-            Alert.alert("Error", err.message || "No se pudo eliminar la propiedad.");
+            showToast(err.message || "No se pudo eliminar la propiedad.", "error");
           }
         },
       },
@@ -194,8 +202,9 @@ function PerfilScreen({ navigation }) {
         body: JSON.stringify({ verified: true }),
       });
       setMyProperties((prev) => prev.map((p) => (p.id === property.id ? { ...p, verified: true } : p)));
+      showToast("Propiedad verificada", "success");
     } catch (err) {
-      Alert.alert("Error", err.message || "No se pudo verificar la propiedad.");
+      showToast(err.message || "No se pudo verificar la propiedad.", "error");
     }
   };
 
@@ -342,9 +351,9 @@ function PerfilScreen({ navigation }) {
                 que se recargan los datos. */}
             <View className={tab === "propiedades" ? undefined : "hidden"}>
               <View className={loadingProps ? undefined : "hidden"}>
-                <View className="items-center py-10 px-4">
-                  <ActivityIndicator color={colors.brand700} />
-                </View>
+                <MyPropertyRowSkeleton />
+                <MyPropertyRowSkeleton />
+                <MyPropertyRowSkeleton />
               </View>
 
               <View className={!loadingProps && myProperties.length === 0 ? undefined : "hidden"}>

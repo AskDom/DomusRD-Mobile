@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { View, Text, Image, ScrollView, ActivityIndicator, Pressable, Linking } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  Pressable,
+  Linking,
+  useWindowDimensions,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -10,6 +18,7 @@ import { useTheme } from "../context/ThemeContext";
 import { formatPrice } from "../components/PropertyCard";
 import SectionHeader from "../components/SectionHeader";
 import ReviewSection from "../components/ReviewSection";
+import { PropertyDetailSkeleton } from "../components/Skeleton";
 import { typeLabel, statusLabel } from "../utils/propertyLabels";
 import { colors } from "../theme/colors";
 
@@ -23,10 +32,13 @@ export default function PropertyDetail({ route, navigation }) {
   const { currentUser } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { dark } = useTheme();
+  const { width } = useWindowDimensions();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeImage, setActiveImage] = useState(0);
   const iconColor = dark ? "#D1D5DB" : "#374151";
+  const galleryHeight = 300;
 
   useEffect(() => {
     (async () => {
@@ -43,9 +55,9 @@ export default function PropertyDetail({ route, navigation }) {
 
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white dark:bg-gray-950">
-        <ActivityIndicator size="large" color={colors.brand700} />
-      </View>
+      <SafeAreaView className="flex-1 bg-white dark:bg-gray-950" edges={["bottom"]}>
+        <PropertyDetailSkeleton />
+      </SafeAreaView>
     );
   }
 
@@ -60,19 +72,59 @@ export default function PropertyDetail({ route, navigation }) {
   }
 
   const status = statusLabel(property.status);
+  const images = property.images?.length ? property.images : [null];
   const openInMaps = () => {
     const label = encodeURIComponent(property.title);
     Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${property.lat},${property.lng}&query_place_id=${label}`);
+  };
+
+  const onGalleryScroll = (e) => {
+    const idx = Math.round(e.nativeEvent.contentOffset.x / width);
+    if (idx !== activeImage) setActiveImage(idx);
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-950" edges={["bottom"]}>
       <ScrollView>
         <View className="relative">
-          {property.images?.[0] ? (
-            <Image source={{ uri: property.images[0] }} className="w-full h-64" />
-          ) : (
-            <View className="w-full h-64 bg-gray-100 dark:bg-gray-800" />
+          <ScrollView
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={onGalleryScroll}
+            scrollEventThrottle={32}
+          >
+            {images.map((uri, i) =>
+              uri ? (
+                <Image key={i} source={{ uri }} style={{ width, height: galleryHeight }} />
+              ) : (
+                <View
+                  key={i}
+                  style={{ width, height: galleryHeight }}
+                  className="bg-gray-100 dark:bg-gray-800 items-center justify-center"
+                >
+                  <Ionicons name="home-outline" size={40} color={dark ? "#4B5563" : "#D1D5DB"} />
+                </View>
+              )
+            )}
+          </ScrollView>
+
+          {images.length > 1 && (
+            <>
+              <View className="absolute bottom-3 self-center flex-row gap-1.5">
+                {images.map((_, i) => (
+                  <View
+                    key={i}
+                    className={`w-1.5 h-1.5 rounded-full ${i === activeImage ? "bg-white" : "bg-white/50"}`}
+                  />
+                ))}
+              </View>
+              <View className="absolute top-3 right-3 bg-black/40 rounded-full px-2.5 py-1">
+                <Text className="text-white text-xs font-semibold">
+                  {activeImage + 1}/{images.length}
+                </Text>
+              </View>
+            </>
           )}
 
           <View className="absolute top-3 left-3 flex-row items-center gap-1.5">
