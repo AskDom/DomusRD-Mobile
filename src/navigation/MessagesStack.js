@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator();
 export default function MessagesStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="MessagesList" component={Mensajes} options={{ title: "Mensajes" }} />
+      <Stack.Screen name="MessagesList" component={Mensajes} options={{ headerShown: false }} />
       <Stack.Screen
         name="ConversationThread"
         component={ConversationThread}

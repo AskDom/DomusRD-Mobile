@@ -196,8 +196,19 @@ export default function Publish({ navigation, route }) {
 
   return (
     <KeyboardAvoidingView className="flex-1" behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <SafeAreaView className="flex-1 bg-white dark:bg-gray-950" edges={["bottom"]}>
+      <SafeAreaView className="flex-1 bg-white dark:bg-gray-950">
         <ScrollView contentContainerStyle={{ padding: 20 }} keyboardShouldPersistTaps="handled">
+          {editing && (
+            <Pressable
+              onPress={() => navigation.goBack()}
+              className="flex-row items-center gap-1 mb-4 self-start"
+              hitSlop={8}
+            >
+              <Ionicons name="chevron-back" size={20} color={dark ? "#D1D5DB" : "#374151"} />
+              <Text className="text-gray-700 dark:text-gray-300 font-medium">Volver</Text>
+            </Pressable>
+          )}
+
           <Text className="font-extrabold text-2xl text-gray-900 dark:text-white mb-1">
             {editing ? "Editar propiedad" : "Publicar propiedad"}
           </Text>

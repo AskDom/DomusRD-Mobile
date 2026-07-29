@@ -10,7 +10,9 @@ export default function PerfilStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="PerfilHome" component={Perfil} options={{ title: "Perfil" }} />
-      <Stack.Screen name="Publish" component={Publish} options={{ title: "Editar propiedad" }} />
+      {/* Sin header nativo — Publish.js ya muestra su propio título y, en modo
+          edición, su propio botón de volver. */}
+      <Stack.Screen name="Publish" component={Publish} options={{ headerShown: false }} />
       <Stack.Screen
         name="PropertyDetail"
         component={PropertyDetail}

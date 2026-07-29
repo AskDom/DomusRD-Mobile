@@ -28,7 +28,7 @@ export default function Favoritos({ navigation }) {
   }, [load]);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950" edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
       <View className="px-4 pt-4 pb-1">
         <Text className="font-extrabold text-2xl text-gray-900 dark:text-white">Favoritos</Text>
       </View>

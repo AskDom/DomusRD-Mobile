@@ -115,7 +115,7 @@ export default function PropertyList({ navigation }) {
 
   if (viewMode === "map") {
     return (
-      <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950" edges={["bottom"]}>
+      <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
         <View className="px-4 pt-4 pb-2">
           <Text className="font-extrabold text-2xl text-gray-900 dark:text-white mb-3">Propiedades</Text>
           {searchAndTabs}
@@ -143,7 +143,7 @@ export default function PropertyList({ navigation }) {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950" edges={["bottom"]}>
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
       <FlatList
         data={loading || error ? [] : properties}
         keyExtractor={(item) => item.id}

@@ -12,7 +12,9 @@ export default function HomeStack() {
       <Stack.Screen
         name="PropertyList"
         component={PropertyList}
-        options={{ title: "DomusRD" }}
+        // El propio contenido ya tiene su título ("Propiedades") — un header
+        // nativo encima solo duplicaba el mensaje.
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="PropertyDetail"
