@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { apiFetch } from "../api/client";
 import { useFavorites } from "../context/FavoritesContext";
-import PropertyCard from "../components/PropertyCard";
+import PropertyListItem from "../components/PropertyListItem";
 import { colors } from "../theme/colors";
 
 export default function Favoritos({ navigation }) {
@@ -53,7 +53,7 @@ export default function Favoritos({ navigation }) {
             </View>
           }
           renderItem={({ item }) => (
-            <PropertyCard
+            <PropertyListItem
               property={item}
               onPress={() => navigation.navigate("PropertyDetail", { id: item.id })}
             />
