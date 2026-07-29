@@ -17,14 +17,17 @@ const formatShortPrice = (price) => {
 // República Dominicana centrada, para cuando no hay ninguna propiedad con ubicación.
 const RD_CENTER = [18.7357, -70.1627];
 
-// Tiles de CARTO (gratis, sin API key) en vez de los de OpenStreetMap.org
-// planos: tienen una paleta mucho más neutra/minimalista que combina con el
-// resto de la app, y traen una variante oscura lista para modo oscuro (los
-// tiles de OSM estándar son siempre claros, sin importar el tema).
+// Tiles a color de OpenStreetMap.org para modo claro (parques verdes, agua
+// azul, calles distinguibles — el "light_all" de CARTO que se probó antes
+// era una paleta grisácea tipo blanco y negro). Para modo oscuro no existe
+// una versión oscura de estos mismos tiles gratis sin API key, así que ahí
+// sí usamos el "dark_all" de CARTO (que solo se ve mientras la app está en
+// modo oscuro, no reemplaza al mapa de siempre).
 const TILE_URL = {
-  light: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+  light: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   dark: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
 };
+const TILE_SUBDOMAINS = { light: "abc", dark: "abcd" };
 const MAP_BG = { light: "#E5E7EB", dark: "#1F2937" };
 
 function buildHtml(properties, dark) {
@@ -38,12 +41,13 @@ function buildHtml(properties, dark) {
       color: STATUS_COLOR[statusLabel(p.status)] || STATUS_COLOR.Venta,
     }));
 
-  // Leaflet + tiles de CARTO — sin API key, misma librería que usa el web.
+  // Leaflet + Leaflet.markercluster — sin API key.
   return `<!DOCTYPE html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <style>
     html, body, #map { height: 100%; margin: 0; padding: 0; background: ${MAP_BG[dark ? "dark" : "light"]}; }
     .leaflet-control-zoom { border: none !important; margin: 12px !important; }
@@ -59,6 +63,12 @@ function buildHtml(properties, dark) {
       font: 700 11px -apple-system, sans-serif; white-space: nowrap;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 2px solid white;
     }
+    .cluster-pin {
+      width: 40px; height: 40px; border-radius: 20px; background: ${colors.brand800};
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font: 800 13px -apple-system, sans-serif; border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    }
     .map-attr {
       position: absolute; left: 8px; bottom: 6px; z-index: 500;
       font: 500 9px -apple-system, sans-serif; color: ${dark ? "rgba(229,231,235,0.55)" : "rgba(55,65,81,0.55)"};
@@ -69,18 +79,31 @@ function buildHtml(properties, dark) {
   <div id="map"></div>
   <div class="map-attr">© OpenStreetMap, © CARTO</div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script>
     var points = ${JSON.stringify(points)};
     var map = L.map('map', { zoomControl: true, attributionControl: false });
-    L.tileLayer('${TILE_URL[dark ? "dark" : "light"]}', { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
+    L.tileLayer('${TILE_URL[dark ? "dark" : "light"]}', {
+      subdomains: '${TILE_SUBDOMAINS[dark ? "dark" : "light"]}',
+      maxZoom: 19,
+    }).addTo(map);
 
-    if (points.length === 1) {
-      map.setView([points[0].lat, points[0].lng], 14);
-    } else if (points.length > 1) {
-      map.fitBounds(L.latLngBounds(points.map(function (p) { return [p.lat, p.lng]; })), { padding: [40, 40] });
-    } else {
-      map.setView([${RD_CENTER[0]}, ${RD_CENTER[1]}], 8);
-    }
+    // Agrupa pines que están muy cerca (o exactamente superpuestos, como
+    // varias unidades del mismo edificio) en una sola burbuja con el
+    // conteo. Sin esto, con varias propiedades juntas los precios se
+    // amontonaban unos sobre otros y no se podía leer ninguno.
+    var clusterGroup = L.markerClusterGroup({
+      showCoverageOnHover: false,
+      spiderfyOnMaxZoom: true,
+      maxClusterRadius: 45,
+      iconCreateFunction: function (cluster) {
+        return L.divIcon({
+          className: '',
+          html: '<div class="cluster-pin">' + cluster.getChildCount() + '</div>',
+          iconSize: [40, 40],
+        });
+      },
+    });
 
     points.forEach(function (p) {
       var icon = L.divIcon({
@@ -88,10 +111,20 @@ function buildHtml(properties, dark) {
         html: '<div class="price-pin" style="--c:' + p.color + '">' + p.label + '</div>',
         iconSize: [0, 0],
       });
-      L.marker([p.lat, p.lng], { icon: icon }).addTo(map).on('click', function () {
+      var marker = L.marker([p.lat, p.lng], { icon: icon }).on('click', function () {
         window.ReactNativeWebView.postMessage(JSON.stringify({ id: p.id }));
       });
+      clusterGroup.addLayer(marker);
     });
+    map.addLayer(clusterGroup);
+
+    if (points.length === 1) {
+      map.setView([points[0].lat, points[0].lng], 14);
+    } else if (points.length > 1) {
+      map.fitBounds(clusterGroup.getBounds(), { padding: [40, 40] });
+    } else {
+      map.setView([${RD_CENTER[0]}, ${RD_CENTER[1]}], 8);
+    }
   </script>
 </body>
 </html>`;
