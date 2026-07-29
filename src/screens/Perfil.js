@@ -18,6 +18,7 @@ import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { useTheme } from "../context/ThemeContext";
 import { formatPrice } from "../components/PropertyCard";
+import ErrorBoundary from "../components/ErrorBoundary";
 import { typeLabel, statusLabel } from "../utils/propertyLabels";
 import { colors } from "../theme/colors";
 
@@ -101,7 +102,15 @@ function MyPropertyRow({ property, onEdit, onDelete, onVerify, iconColor }) {
   );
 }
 
-export default function Perfil({ navigation }) {
+export default function Perfil(props) {
+  return (
+    <ErrorBoundary>
+      <PerfilScreen {...props} />
+    </ErrorBoundary>
+  );
+}
+
+function PerfilScreen({ navigation }) {
   const { currentUser, logout, updateAvatar } = useAuth();
   const { favorites } = useFavorites();
   const { dark, toggleDark } = useTheme();
