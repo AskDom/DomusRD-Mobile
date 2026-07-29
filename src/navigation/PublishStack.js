@@ -8,7 +8,11 @@ const Stack = createNativeStackNavigator();
 export default function PublishStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Publish" component={Publish} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Publish"
+        component={Publish}
+        options={{ headerShown: false, title: "Publicar" }}
+      />
       <Stack.Screen
         name="PropertyDetail"
         component={PropertyDetail}

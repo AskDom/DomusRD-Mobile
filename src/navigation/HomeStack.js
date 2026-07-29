@@ -13,8 +13,11 @@ export default function HomeStack() {
         name="PropertyList"
         component={PropertyList}
         // El propio contenido ya tiene su título ("Propiedades") — un header
-        // nativo encima solo duplicaba el mensaje.
-        options={{ headerShown: false }}
+        // nativo encima solo duplicaba el mensaje. El title igual queda acá
+        // porque React Navigation lo usa como texto del botón de "volver" en
+        // las pantallas que se abren desde esta (si no, muestra el nombre
+        // crudo de la ruta, "PropertyList").
+        options={{ headerShown: false, title: "Inicio" }}
       />
       <Stack.Screen
         name="PropertyDetail"

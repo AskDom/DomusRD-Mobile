@@ -12,7 +12,9 @@ export default function FavoritesStack() {
       <Stack.Screen
         name="FavoritesList"
         component={Favoritos}
-        options={{ headerShown: false }}
+        // title queda para que el botón de "volver" de las pantallas
+        // siguientes diga "Favoritos" en vez del nombre crudo de la ruta.
+        options={{ headerShown: false, title: "Favoritos" }}
       />
       <Stack.Screen
         name="PropertyDetail"
