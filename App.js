@@ -5,7 +5,12 @@ import { View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+  createNavigationContainerRef,
+} from "@react-navigation/native";
 import {
   useFonts,
   PlusJakartaSans_400Regular,
@@ -18,12 +23,18 @@ import {
 import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
 import { ToastProvider } from "./src/context/ToastContext";
 import { AuthProvider } from "./src/context/AuthContext";
+import { SocketProvider } from "./src/context/SocketContext";
 import { FavoritesProvider } from "./src/context/FavoritesContext";
 import { InboxProvider } from "./src/context/InboxContext";
 import RootNavigator from "./src/navigation/RootNavigator";
+import usePushNotifications from "./src/hooks/usePushNotifications";
 import { colors } from "./src/theme/colors";
 
 SplashScreen.preventAutoHideAsync();
+
+// Vive fuera del árbol de React a propósito: así usePushNotifications puede
+// navegar al tocar una notificación sin depender de dónde esté montado.
+const navigationRef = createNavigationContainerRef();
 
 const NAV_LIGHT_THEME = {
   ...DefaultTheme,
@@ -34,21 +45,29 @@ const NAV_DARK_THEME = {
   colors: { ...DarkTheme.colors, primary: colors.brand400, background: "#030712", card: "#111827" },
 };
 
+function PushNotificationsGate() {
+  usePushNotifications(navigationRef);
+  return null;
+}
+
 function AppContent({ onLayoutRootView }) {
   const { dark } = useTheme();
 
   return (
     <AuthProvider>
-      <FavoritesProvider>
-        <InboxProvider>
-          <View className="flex-1 bg-white dark:bg-gray-950" onLayout={onLayoutRootView}>
-            <NavigationContainer theme={dark ? NAV_DARK_THEME : NAV_LIGHT_THEME}>
-              <RootNavigator />
-            </NavigationContainer>
-            <StatusBar style={dark ? "light" : "dark"} />
-          </View>
-        </InboxProvider>
-      </FavoritesProvider>
+      <SocketProvider>
+        <FavoritesProvider>
+          <InboxProvider>
+            <PushNotificationsGate />
+            <View className="flex-1 bg-white dark:bg-gray-950" onLayout={onLayoutRootView}>
+              <NavigationContainer ref={navigationRef} theme={dark ? NAV_DARK_THEME : NAV_LIGHT_THEME}>
+                <RootNavigator />
+              </NavigationContainer>
+              <StatusBar style={dark ? "light" : "dark"} />
+            </View>
+          </InboxProvider>
+        </FavoritesProvider>
+      </SocketProvider>
     </AuthProvider>
   );
 }

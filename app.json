@@ -45,6 +45,12 @@
         {
           "locationAlwaysAndWhenInUsePermission": "DomusRD necesita tu ubicación para marcar dónde está la propiedad que estás publicando."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#164060"
+        }
       ]
     ]
   }

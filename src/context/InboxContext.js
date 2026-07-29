@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useCallback, useEffect } from "rea
 
 import { apiFetch } from "../api/client";
 import { useAuth } from "./AuthContext";
+import { useSocket } from "./SocketContext";
 
 const InboxContext = createContext();
 
@@ -21,6 +22,7 @@ const normalize = (m) => ({
 
 export function InboxProvider({ children }) {
   const { currentUser } = useAuth();
+  const socket = useSocket();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -43,6 +45,25 @@ export function InboxProvider({ children }) {
   useEffect(() => {
     fetchMessages();
   }, [fetchMessages]);
+
+  // El backend emite el mensaje ya normalizado (mismo shape que `normalize`
+  // produce acá) tanto al receptor ("new_message") como al emisor en otros
+  // dispositivos/pestañas ("message_sent") — así el hilo y el badge de la
+  // tab Mensajes se actualizan solos, sin esperar a volver a esta pantalla.
+  useEffect(() => {
+    if (!socket) return;
+
+    const upsert = (msg) => {
+      setMessages((prev) => [msg, ...prev.filter((m) => m.id !== msg.id)]);
+    };
+
+    socket.on("new_message", upsert);
+    socket.on("message_sent", upsert);
+    return () => {
+      socket.off("new_message", upsert);
+      socket.off("message_sent", upsert);
+    };
+  }, [socket]);
 
   // Optimista: agrega un mensaje temporal, lo reemplaza por el real cuando
   // responde el backend, y lo saca si falla. Sin websocket, este es el único

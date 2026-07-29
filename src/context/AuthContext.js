@@ -81,6 +81,13 @@ export function AuthProvider({ children }) {
   }, []);
 
   const logout = useCallback(async () => {
+    try {
+      // Antes de limpiar el token — el endpoint necesita el Bearer para
+      // saber de qué usuario borrar los push tokens registrados.
+      await apiFetch("/api/notifications/push-token", { method: "DELETE" });
+    } catch {
+      // no bloqueamos el logout si esto falla
+    }
     await clearToken();
     setCurrentUser(null);
   }, []);
