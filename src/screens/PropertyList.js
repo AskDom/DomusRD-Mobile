@@ -29,24 +29,64 @@ export default function PropertyList({ navigation }) {
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState("Todos");
   const [viewMode, setViewMode] = useState("list");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [total, setTotal] = useState(0);
+
+  // El backend pagina de a 12 por default — antes esto pedía siempre la
+  // página 1 y listo, así que nunca se veía nada más allá de los primeros
+  // 12 resultados. buildParams arma la misma búsqueda/filtro para cualquier
+  // página, para no repetirlo entre load() y loadMore().
+  const buildParams = useCallback(
+    (pageNum) => {
+      const filter = TABS.find((t) => t.label === activeTab)?.filter || {};
+      return new URLSearchParams({
+        ...filter,
+        ...(query.trim() ? { search: query.trim() } : {}),
+        page: String(pageNum),
+        limit: "20",
+      });
+    },
+    [activeTab, query]
+  );
 
   const load = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const filter = TABS.find((t) => t.label === activeTab)?.filter || {};
-      const params = new URLSearchParams({ ...filter, ...(query.trim() ? { search: query.trim() } : {}) });
-      const data = await apiFetch(`/api/properties?${params.toString()}`);
+      const data = await apiFetch(`/api/properties?${buildParams(1).toString()}`);
       setProperties(data.properties);
+      setPage(1);
+      setHasMore(data.pagination?.hasMore ?? false);
+      setTotal(data.pagination?.total ?? data.properties.length);
     } catch (err) {
       setError(err.message || "No se pudieron cargar las propiedades.");
     } finally {
       setLoading(false);
     }
-  }, [activeTab, query]);
+  }, [buildParams]);
+
+  const loadMore = useCallback(async () => {
+    if (loading || loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    try {
+      const nextPage = page + 1;
+      const data = await apiFetch(`/api/properties?${buildParams(nextPage).toString()}`);
+      setProperties((prev) => [...prev, ...data.properties]);
+      setPage(nextPage);
+      setHasMore(data.pagination?.hasMore ?? false);
+    } catch {
+      // si falla, se queda con lo que ya cargó — el usuario puede volver a
+      // hacer scroll para reintentar
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [buildParams, page, loading, loadingMore, hasMore]);
 
   // Recarga al cambiar de categoría al toque; al escribir, con un pequeño
-  // debounce para no mandar una petición por cada letra.
+  // debounce para no mandar una petición por cada letra. Siempre vuelve a
+  // la página 1 (load, no loadMore) porque buildParams cambió.
   useEffect(() => {
     const t = setTimeout(load, 350);
     return () => clearTimeout(t);
@@ -102,7 +142,7 @@ export default function PropertyList({ navigation }) {
       {!loading && !error && (
         <View className="flex-row items-center justify-between mt-3">
           <Text className="text-gray-500 dark:text-gray-400">
-            {properties.length} {properties.length === 1 ? "disponible" : "disponibles"}
+            {total} {total === 1 ? "disponible" : "disponibles"}
           </Text>
 
           <View className="flex-row bg-gray-100 dark:bg-gray-800 rounded-full p-1">
@@ -172,6 +212,15 @@ export default function PropertyList({ navigation }) {
         contentContainerStyle={{ padding: 16, flexGrow: 1 }}
         onRefresh={load}
         refreshing={loading}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.4}
+        ListFooterComponent={
+          loadingMore ? (
+            <View className="py-6">
+              <ActivityIndicator color={colors.brand700} />
+            </View>
+          ) : null
+        }
         ListHeaderComponent={
           // Va adentro del FlatList para que se desplace con el scroll en
           // vez de quedar fijo ocupando pantalla todo el tiempo.
