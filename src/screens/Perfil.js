@@ -271,7 +271,10 @@ export default function Perfil({ navigation }) {
             </View>
 
             {tab === "cuenta" && (
-              <View className="mx-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-4">
+              <View
+                key="cuenta-tab"
+                className="mx-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-4"
+              >
                 {[
                   { icon: "person-outline", label: "Nombre completo", value: currentUser?.name },
                   { icon: "mail-outline", label: "Correo", value: currentUser?.email },
@@ -299,7 +302,7 @@ export default function Perfil({ navigation }) {
             )}
 
             {tab === "propiedades" && (
-              <View className="px-4">
+              <View key="propiedades-tab" className="px-4">
                 {loadingProps ? (
                   <View className="items-center py-10">
                     <ActivityIndicator color={colors.brand700} />
