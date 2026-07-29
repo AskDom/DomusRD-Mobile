@@ -78,9 +78,19 @@ export default function PropertyList({ navigation }) {
             <Pressable
               key={tab.label}
               onPress={() => setActiveTab(tab.label)}
-              className={`px-4 py-2 rounded-full ${active ? "bg-brand-700" : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700"}`}
+              className={`px-4 py-2 rounded-full ${
+                active
+                  ? "bg-brand-700 dark:bg-brand-700"
+                  : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700"
+              }`}
             >
-              <Text className={active ? "text-white font-semibold text-sm" : "text-gray-600 dark:text-gray-300 text-sm"}>
+              <Text
+                className={
+                  active
+                    ? "text-white dark:text-white font-semibold text-sm"
+                    : "text-gray-600 dark:text-gray-300 text-sm"
+                }
+              >
                 {tab.label}
               </Text>
             </Pressable>
@@ -95,15 +105,23 @@ export default function PropertyList({ navigation }) {
           </Text>
 
           <View className="flex-row bg-gray-100 dark:bg-gray-800 rounded-full p-1">
+            {/* Las dos ramas siempre incluyen una clase dark: — ver el
+                comentario en Perfil.js sobre por qué alternar dark:
+                presente/ausente en un Pressable dispara un bug de
+                NativeWind al cambiar de estado. */}
             <Pressable
               onPress={() => setViewMode("list")}
-              className={`px-3 py-1.5 rounded-full ${viewMode === "list" ? "bg-white dark:bg-gray-700 shadow-sm" : ""}`}
+              className={`px-3 py-1.5 rounded-full ${
+                viewMode === "list" ? "bg-white dark:bg-gray-700 shadow-sm" : "bg-transparent dark:bg-transparent"
+              }`}
             >
               <Ionicons name="list-outline" size={16} color={viewMode === "list" ? colors.brand700 : placeholderColor} />
             </Pressable>
             <Pressable
               onPress={() => setViewMode("map")}
-              className={`px-3 py-1.5 rounded-full ${viewMode === "map" ? "bg-white dark:bg-gray-700 shadow-sm" : ""}`}
+              className={`px-3 py-1.5 rounded-full ${
+                viewMode === "map" ? "bg-white dark:bg-gray-700 shadow-sm" : "bg-transparent dark:bg-transparent"
+              }`}
             >
               <Ionicons name="map-outline" size={16} color={viewMode === "map" ? colors.brand700 : placeholderColor} />
             </Pressable>

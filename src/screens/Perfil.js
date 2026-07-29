@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,7 +10,6 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -137,11 +136,14 @@ function PerfilScreen({ navigation }) {
     }
   }, [currentUser]);
 
-  useFocusEffect(
-    useCallback(() => {
-      loadMyProperties();
-    }, [loadMyProperties])
-  );
+  // Antes recargaba en cada foco (useFocusEffect) — pero eso significaba que
+  // el swap "cargando" -> "lista" pasaba una y otra vez cada vez que se
+  // volvía a esta pantalla, y ese swap repetido era lo que seguía
+  // disparando el bug de NativeWind más abajo. Ahora carga solo una vez;
+  // el pull-to-refresh (RefreshControl) cubre el caso de querer refrescar.
+  useEffect(() => {
+    loadMyProperties();
+  }, [loadMyProperties]);
 
   const handleAvatarPress = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -275,8 +277,17 @@ function PerfilScreen({ navigation }) {
                 <Pressable
                   key={t.key}
                   onPress={() => setTab(t.key)}
+                  // Las dos ramas siempre incluyen una clase dark: (aunque
+                  // sea "transparent" en la inactiva) — si una rama tiene
+                  // dark: y la otra no, el Pressable pasa de "no necesita
+                  // variables" a "sí necesita" (o viceversa) después de su
+                  // primer render, y ESO es lo que dispara este bug de
+                  // NativeWind. Con las dos ramas simétricas en esa
+                  // dimensión, la necesidad de variables queda constante.
                   className={`flex-1 py-2.5 rounded-lg items-center ${
-                    tab === t.key ? "bg-white dark:bg-gray-700 shadow-sm" : ""
+                    tab === t.key
+                      ? "bg-white dark:bg-gray-700 shadow-sm"
+                      : "bg-transparent dark:bg-transparent"
                   }`}
                 >
                   <Text
@@ -325,20 +336,28 @@ function PerfilScreen({ navigation }) {
               </View>
             </View>
 
+            {/* Mismo motivo que arriba: los tres estados (cargando/vacío/
+                lista) quedan siempre montados y solo se alterna "hidden",
+                para que el swap no vuelva a disparar el mismo bug cada vez
+                que se recargan los datos. */}
             <View className={tab === "propiedades" ? undefined : "hidden"}>
-              {loadingProps ? (
+              <View className={loadingProps ? undefined : "hidden"}>
                 <View className="items-center py-10 px-4">
                   <ActivityIndicator color={colors.brand700} />
                 </View>
-              ) : myProperties.length === 0 ? (
+              </View>
+
+              <View className={!loadingProps && myProperties.length === 0 ? undefined : "hidden"}>
                 <View className="items-center py-10 mx-4 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
                   <Text className="text-4xl mb-2">🏚️</Text>
                   <Text className="text-gray-500 dark:text-gray-400 text-center px-6">
                     Todavía no publicaste ninguna propiedad.
                   </Text>
                 </View>
-              ) : (
-                myProperties.map((item) => (
+              </View>
+
+              <View className={!loadingProps && myProperties.length > 0 ? undefined : "hidden"}>
+                {myProperties.map((item) => (
                   <MyPropertyRow
                     key={item.id}
                     property={item}
@@ -347,8 +366,8 @@ function PerfilScreen({ navigation }) {
                     onVerify={handleVerify}
                     iconColor={iconColor}
                   />
-                ))
-              )}
+                ))}
+              </View>
             </View>
         </View>
       </ScrollView>

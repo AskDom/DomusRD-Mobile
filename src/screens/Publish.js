@@ -262,9 +262,17 @@ export default function Publish({ navigation, route }) {
                 <Pressable
                   key={t.value}
                   onPress={() => setType(t.value)}
-                  className={`px-4 py-2 rounded-full ${type === t.value ? "bg-brand-700" : "bg-gray-100 dark:bg-gray-800"}`}
+                  className={`px-4 py-2 rounded-full ${
+                    type === t.value ? "bg-brand-700 dark:bg-brand-700" : "bg-gray-100 dark:bg-gray-800"
+                  }`}
                 >
-                  <Text className={type === t.value ? "text-white font-semibold text-sm" : "text-gray-600 dark:text-gray-300 text-sm"}>
+                  <Text
+                    className={
+                      type === t.value
+                        ? "text-white dark:text-white font-semibold text-sm"
+                        : "text-gray-600 dark:text-gray-300 text-sm"
+                    }
+                  >
                     {t.label}
                   </Text>
                 </Pressable>
@@ -278,9 +286,17 @@ export default function Publish({ navigation, route }) {
                 <Pressable
                   key={s.value}
                   onPress={() => setStatus(s.value)}
-                  className={`px-4 py-2 rounded-full ${status === s.value ? "bg-brand-700" : "bg-gray-100 dark:bg-gray-800"}`}
+                  className={`px-4 py-2 rounded-full ${
+                    status === s.value ? "bg-brand-700 dark:bg-brand-700" : "bg-gray-100 dark:bg-gray-800"
+                  }`}
                 >
-                  <Text className={status === s.value ? "text-white font-semibold text-sm" : "text-gray-600 dark:text-gray-300 text-sm"}>
+                  <Text
+                    className={
+                      status === s.value
+                        ? "text-white dark:text-white font-semibold text-sm"
+                        : "text-gray-600 dark:text-gray-300 text-sm"
+                    }
+                  >
                     {s.label}
                   </Text>
                 </Pressable>

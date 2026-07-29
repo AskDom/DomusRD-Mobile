@@ -83,11 +83,11 @@ export default function ConversationThread({ route }) {
                 <View
                   className={
                     mine
-                      ? "bg-brand-700 rounded-2xl rounded-br-sm px-3.5 py-2.5 max-w-[80%] shadow-sm"
+                      ? "bg-brand-700 dark:bg-brand-700 rounded-2xl rounded-br-sm px-3.5 py-2.5 max-w-[80%] shadow-sm"
                       : "bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl rounded-bl-sm px-3.5 py-2.5 max-w-[80%] shadow-sm"
                   }
                 >
-                  <Text className={mine ? "text-white" : "text-gray-900 dark:text-white"}>
+                  <Text className={mine ? "text-white dark:text-white" : "text-gray-900 dark:text-white"}>
                     {item.text}
                   </Text>
                 </View>
