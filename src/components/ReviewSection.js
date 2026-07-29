@@ -161,9 +161,10 @@ export default function ReviewSection({ propertyId, publishedById }) {
           {!showForm ? (
             <Pressable
               onPress={() => setShowForm(true)}
-              className="bg-brand-700 rounded-2xl py-3 items-center active:bg-brand-800"
+              className="flex-row items-center justify-center gap-2 border-2 border-brand-700 dark:border-brand-400 rounded-2xl py-3 active:bg-brand-50 dark:active:bg-brand-900/20"
             >
-              <Text className="text-white font-semibold">
+              <Ionicons name="star-outline" size={16} color={dark ? colors.brand400 : colors.brand700} />
+              <Text className="text-brand-700 dark:text-brand-400 font-semibold">
                 {myReview ? "Editar tu reseña" : "Escribir una reseña"}
               </Text>
             </Pressable>
