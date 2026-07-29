@@ -50,7 +50,15 @@ export default function AppTabs() {
       })}
     >
       <Tab.Screen name="Inicio" component={HomeStack} />
-      {canPublish && <Tab.Screen name="Publicar" component={PublishStack} />}
+      <Tab.Screen
+        name="Publicar"
+        component={PublishStack}
+        // El set de pantallas de un navegador tiene que ser estable — quitar
+        // y poner un <Tab.Screen> según el rol corrompe el estado interno de
+        // React Navigation (rompía los navegadores anidados, como el de
+        // Perfil). Se oculta el botón en vez de sacar la pantalla.
+        options={canPublish ? undefined : { tabBarButton: () => null, tabBarItemStyle: { display: "none" } }}
+      />
       <Tab.Screen name="Favoritos" component={FavoritesStack} />
       <Tab.Screen
         name="Mensajes"
