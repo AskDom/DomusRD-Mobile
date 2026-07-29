@@ -8,6 +8,8 @@ import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { useTheme } from "../context/ThemeContext";
 import { formatPrice } from "../components/PropertyCard";
+import SectionHeader from "../components/SectionHeader";
+import ReviewSection from "../components/ReviewSection";
 import { typeLabel, statusLabel } from "../utils/propertyLabels";
 import { colors } from "../theme/colors";
 
@@ -15,15 +17,6 @@ const STATUS_BG = {
   Venta: "bg-brand-700",
   Renta: "bg-emerald-600",
 };
-
-function SectionHeader({ children }) {
-  return (
-    <View className="flex-row items-center gap-2 mb-3">
-      <View className="w-1 h-4 bg-brand-700 dark:bg-brand-400 rounded-full" />
-      <Text className="font-extrabold text-base text-gray-900 dark:text-white">{children}</Text>
-    </View>
-  );
-}
 
 export default function PropertyDetail({ route, navigation }) {
   const { id } = route.params;
@@ -223,6 +216,8 @@ export default function PropertyDetail({ route, navigation }) {
               )}
             </View>
           ) : null}
+
+          <ReviewSection propertyId={property.id} publishedById={property.publishedById} />
         </View>
       </ScrollView>
     </SafeAreaView>
