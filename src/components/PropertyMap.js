@@ -17,7 +17,17 @@ const formatShortPrice = (price) => {
 // República Dominicana centrada, para cuando no hay ninguna propiedad con ubicación.
 const RD_CENTER = [18.7357, -70.1627];
 
-function buildHtml(properties) {
+// Tiles de CARTO (gratis, sin API key) en vez de los de OpenStreetMap.org
+// planos: tienen una paleta mucho más neutra/minimalista que combina con el
+// resto de la app, y traen una variante oscura lista para modo oscuro (los
+// tiles de OSM estándar son siempre claros, sin importar el tema).
+const TILE_URL = {
+  light: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+  dark: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+};
+const MAP_BG = { light: "#E5E7EB", dark: "#1F2937" };
+
+function buildHtml(properties, dark) {
   const points = properties
     .filter((p) => p.lat != null && p.lng != null)
     .map((p) => ({
@@ -28,28 +38,41 @@ function buildHtml(properties) {
       color: STATUS_COLOR[statusLabel(p.status)] || STATUS_COLOR.Venta,
     }));
 
-  // Leaflet + tiles de OpenStreetMap — sin API key, misma librería que usa el web.
+  // Leaflet + tiles de CARTO — sin API key, misma librería que usa el web.
   return `<!DOCTYPE html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    html, body, #map { height: 100%; margin: 0; padding: 0; background: #E5E7EB; }
+    html, body, #map { height: 100%; margin: 0; padding: 0; background: ${MAP_BG[dark ? "dark" : "light"]}; }
+    .leaflet-control-zoom { border: none !important; margin: 12px !important; }
+    .leaflet-control-zoom a {
+      width: 32px !important; height: 32px !important; line-height: 32px !important;
+      color: ${dark ? "#E5E7EB" : "#164060"} !important;
+      background: ${dark ? "#111827" : "#FFFFFF"} !important;
+      border-radius: 10px !important; margin-bottom: 6px !important;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important; border: none !important;
+    }
     .price-pin {
       background: var(--c); color: #fff; padding: 4px 10px; border-radius: 20px;
       font: 700 11px -apple-system, sans-serif; white-space: nowrap;
       box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 2px solid white;
     }
+    .map-attr {
+      position: absolute; left: 8px; bottom: 6px; z-index: 500;
+      font: 500 9px -apple-system, sans-serif; color: ${dark ? "rgba(229,231,235,0.55)" : "rgba(55,65,81,0.55)"};
+    }
   </style>
 </head>
 <body>
   <div id="map"></div>
+  <div class="map-attr">© OpenStreetMap, © CARTO</div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     var points = ${JSON.stringify(points)};
-    var map = L.map('map', { zoomControl: false, attributionControl: false });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    var map = L.map('map', { zoomControl: true, attributionControl: false });
+    L.tileLayer('${TILE_URL[dark ? "dark" : "light"]}', { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
 
     if (points.length === 1) {
       map.setView([points[0].lat, points[0].lng], 14);
@@ -74,12 +97,12 @@ function buildHtml(properties) {
 </html>`;
 }
 
-export default function PropertyMap({ properties, onSelectProperty }) {
-  const html = useMemo(() => buildHtml(properties), [properties]);
+export default function PropertyMap({ properties, onSelectProperty, dark }) {
+  const html = useMemo(() => buildHtml(properties, dark), [properties, dark]);
   // Fuerza que el WebView se recargue cuando cambia el set de propiedades
   // (no solo la cantidad) — un mismo conteo con propiedades distintas
   // también tiene que refrescar los marcadores.
-  const mapKey = properties.map((p) => p.id).join(",");
+  const mapKey = properties.map((p) => p.id).join(",") + (dark ? ":dark" : ":light");
 
   return (
     <View className="flex-1">

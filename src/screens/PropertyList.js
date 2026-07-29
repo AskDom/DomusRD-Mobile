@@ -152,10 +152,13 @@ export default function PropertyList({ navigation }) {
             </Pressable>
           </View>
         ) : (
-          <PropertyMap
-            properties={properties}
-            onSelectProperty={(id) => navigation.navigate("PropertyDetail", { id })}
-          />
+          <View className="flex-1 mx-4 mb-4 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800">
+            <PropertyMap
+              properties={properties}
+              dark={dark}
+              onSelectProperty={(id) => navigation.navigate("PropertyDetail", { id })}
+            />
+          </View>
         )}
       </SafeAreaView>
     );
