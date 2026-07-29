@@ -2,40 +2,41 @@
 
 App móvil de DomusRD (Android + iOS) — Expo + React Native, JavaScript.
 
-Consume el mismo backend que la web (`DomusRD-Backend`): auth (login/registro) y listado/detalle de propiedades. Favoritos, mensajes y perfil son pantallas placeholder por ahora.
+Consume el mismo backend que la web (`DomusRD-Backend`): auth, propiedades (listado/detalle/publicar), favoritos y mensajes.
 
 ## Correr el proyecto
 
 ```bash
 npm install
 cp .env.example .env
+npm start
 ```
 
-Editá `.env` y poné en `EXPO_PUBLIC_API_URL` una URL alcanzable **desde el teléfono**:
-
-- Si el backend corre local (`npm run dev` en `DomusRD-Backend`) y el teléfono está en la misma red WiFi que la compu: usá la IP LAN de la compu, ej. `http://192.168.1.50:5000` (no `localhost`).
-- Si ya hay un backend desplegado (Railway): usá esa URL de producción.
-
-Después:
-
-```bash
-npx expo start
-```
+Usá siempre **`npm start`** (no `npx expo start` directo) — corre `scripts/set-api-url.js` antes de arrancar, que detecta la IP LAN actual de la compu y la escribe sola en `.env`. Así no hay que acordarse de actualizarla a mano cada vez que cambia de red.
 
 Escaneá el QR con la app **Expo Go** (Android/iOS) desde tu teléfono. También podés presionar `a` (emulador Android) o `i` (simulador iOS) si tenés Android Studio / Xcode instalados.
+
+### Si cambiás de red seguido (VPN, hotspot del celular)
+
+El teléfono y la compu tienen que estar en la **misma red local** para que esto funcione — es una limitación de cómo Expo Go se conecta al servidor de desarrollo, no de la app. `npm start` resuelve el caso de "la IP cambió pero seguimos en la misma red". Lo que **no** resuelve es estar en redes distintas de verdad (ej. compu con VPN de trabajo y teléfono con datos móviles) — ahí ninguna IP local sirve. Opciones si te pasa:
+
+- Conectá ambos a la misma red (el hotspot del celular sirve: conectá la compu a tu propio hotspot).
+- Si hay un backend ya desplegado (Railway), apuntá `EXPO_PUBLIC_API_URL` en `.env` directo a esa URL en vez de al backend local — evita el problema de raíz.
 
 ## Estructura
 
 ```
 src/
 ├── api/client.js        # fetch centralizado: URL del backend + Bearer token desde SecureStore
-├── context/AuthContext.js
-├── navigation/           # RootNavigator (Auth vs App según sesión), AuthStack, AppTabs, HomeStack
+├── context/              # AuthContext, FavoritesContext, InboxContext
+├── navigation/            # RootNavigator (Auth vs App según sesión), stacks por tab
+├── theme/colors.js        # paleta brand/accent en hex, para componentes RN que no aceptan className
+├── utils/propertyLabels.js
 └── screens/
     ├── auth/              # Login, Register
-    ├── PropertyList.js    # GET /api/properties
-    ├── PropertyDetail.js  # GET /api/properties/:id
-    └── Placeholder.js     # Favoritos / Mensajes / Perfil (pendientes)
+    ├── PropertyList.js, PropertyDetail.js, Publish.js
+    ├── Favoritos.js
+    └── Mensajes.js, ConversationThread.js, Perfil.js
 ```
 
 ## Stack

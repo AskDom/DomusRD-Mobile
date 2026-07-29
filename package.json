@@ -5,6 +5,10 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "set-api-url": "node scripts/set-api-url.js",
+    "prestart": "npm run set-api-url",
+    "preandroid": "npm run set-api-url",
+    "preios": "npm run set-api-url",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
