@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
+import * as Haptics from "expo-haptics";
 import { Ionicons } from "@expo/vector-icons";
 
 import { apiFetch } from "../api/client";
@@ -168,6 +169,9 @@ function PerfilScreen({ navigation }) {
       type: asset.mimeType || "image/jpeg",
     });
     setUploadingAvatar(false);
+    Haptics.notificationAsync(
+      updated ? Haptics.NotificationFeedbackType.Success : Haptics.NotificationFeedbackType.Error
+    );
     showToast(
       updated ? "Foto de perfil actualizada" : "No se pudo actualizar la foto de perfil.",
       updated ? "success" : "error"
@@ -186,8 +190,10 @@ function PerfilScreen({ navigation }) {
           try {
             await apiFetch(`/api/properties/${property.id}`, { method: "DELETE" });
             setMyProperties((prev) => prev.filter((p) => p.id !== property.id));
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             showToast("Propiedad eliminada", "success");
           } catch (err) {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
             showToast(err.message || "No se pudo eliminar la propiedad.", "error");
           }
         },
@@ -202,8 +208,10 @@ function PerfilScreen({ navigation }) {
         body: JSON.stringify({ verified: true }),
       });
       setMyProperties((prev) => prev.map((p) => (p.id === property.id ? { ...p, verified: true } : p)));
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       showToast("Propiedad verificada", "success");
     } catch (err) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       showToast(err.message || "No se pudo verificar la propiedad.", "error");
     }
   };

@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
+import * as Haptics from "expo-haptics";
 import { Ionicons } from "@expo/vector-icons";
 
 import { apiFetch } from "../api/client";
@@ -181,6 +182,7 @@ export default function Publish({ navigation, route }) {
           body: JSON.stringify(payload),
         });
         navigation.goBack();
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         showToast("Propiedad actualizada", "success");
       } else {
         const data = await apiFetch("/api/properties", {
@@ -189,9 +191,11 @@ export default function Publish({ navigation, route }) {
         });
         resetForm();
         navigation.navigate("PropertyDetail", { id: data.property.id });
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         showToast("Propiedad publicada", "success");
       }
     } catch (err) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       setError(err.message || "No se pudo guardar la propiedad.");
     } finally {
       setSubmitting(false);

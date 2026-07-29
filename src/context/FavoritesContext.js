@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
+import * as Haptics from "expo-haptics";
 
 import { apiFetch } from "../api/client";
 import { useAuth } from "./AuthContext";
@@ -34,6 +35,7 @@ export function FavoritesProvider({ children }) {
     async (id) => {
       const wasFavorite = favorites.includes(id);
       setFavorites((prev) => (wasFavorite ? prev.filter((f) => f !== id) : [...prev, id]));
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
       try {
         await apiFetch(`/api/favorites/${id}`, { method: wasFavorite ? "DELETE" : "POST" });
