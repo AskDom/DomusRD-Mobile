@@ -5,12 +5,13 @@ import {
   ScrollView,
   Pressable,
   Linking,
+  Share,
   useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { apiFetch } from "../api/client";
+import { apiFetch, WEB_URL } from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { useTheme } from "../context/ThemeContext";
@@ -81,6 +82,14 @@ export default function PropertyDetail({ route, navigation }) {
   const onGalleryScroll = (e) => {
     const idx = Math.round(e.nativeEvent.contentOffset.x / width);
     if (idx !== activeImage) setActiveImage(idx);
+  };
+
+  const handleShare = () => {
+    const link = WEB_URL ? `${WEB_URL}/property/${property.id}` : null;
+    const message = [`${property.title} — ${formatPrice(property.price)}`, property.city, link]
+      .filter(Boolean)
+      .join("\n");
+    Share.share({ message, ...(link ? { url: link } : {}) });
   };
 
   return (
@@ -154,17 +163,22 @@ export default function PropertyDetail({ route, navigation }) {
             <Text className="font-extrabold text-2xl text-gray-900 dark:text-white flex-1 pr-3">
               {property.title}
             </Text>
-            <Pressable onPress={() => toggleFavorite(property.id)} hitSlop={8}>
-              <Text
-                className={
-                  isFavorite(property.id)
-                    ? "text-accent-500 text-2xl"
-                    : "text-gray-300 dark:text-gray-600 text-2xl"
-                }
-              >
-                {isFavorite(property.id) ? "♥" : "♡"}
-              </Text>
-            </Pressable>
+            <View className="flex-row items-center gap-4">
+              <Pressable onPress={handleShare} hitSlop={8}>
+                <Ionicons name="share-outline" size={22} color={dark ? "#D1D5DB" : "#374151"} />
+              </Pressable>
+              <Pressable onPress={() => toggleFavorite(property.id)} hitSlop={8}>
+                <Text
+                  className={
+                    isFavorite(property.id)
+                      ? "text-accent-500 text-2xl"
+                      : "text-gray-300 dark:text-gray-600 text-2xl"
+                  }
+                >
+                  {isFavorite(property.id) ? "♥" : "♡"}
+                </Text>
+              </Pressable>
+            </View>
           </View>
           <View className="flex-row items-center gap-1 mt-1">
             <Ionicons name="location-outline" size={14} color={dark ? "#9CA3AF" : "#6B7280"} />

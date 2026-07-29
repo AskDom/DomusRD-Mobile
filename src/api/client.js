@@ -1,6 +1,10 @@
 import * as SecureStore from "expo-secure-store";
 
 export const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:5000";
+// Deploy de prueba en Vercel — se actualiza en .env cuando haya dominio
+// definitivo, sin tocar código. undefined si no está seteada (ej. build sin
+// .env): en ese caso se comparte solo el texto, sin link.
+export const WEB_URL = process.env.EXPO_PUBLIC_WEB_URL || null;
 
 const TOKEN_KEY = "domusrd-token";
 
