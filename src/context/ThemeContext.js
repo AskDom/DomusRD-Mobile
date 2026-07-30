@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { useColorScheme } from "nativewind";
 
-const STORAGE_KEY = "domusrd-theme";
+const STORAGE_KEY = "domify-theme";
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {

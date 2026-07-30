@@ -1,6 +1,6 @@
-# DomusRD Mobile
+# Domify Mobile
 
-App móvil de DomusRD (Android + iOS) — Expo + React Native, JavaScript.
+App móvil de Domify (Android + iOS) — Expo + React Native, JavaScript.
 
 Consume el mismo backend que la web (`DomusRD-Backend`): auth, propiedades (listado/detalle/publicar), favoritos y mensajes.
 

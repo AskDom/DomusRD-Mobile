@@ -6,7 +6,7 @@ export const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:5000
 // .env): en ese caso se comparte solo el texto, sin link.
 export const WEB_URL = process.env.EXPO_PUBLIC_WEB_URL || null;
 
-const TOKEN_KEY = "domusrd-token";
+const TOKEN_KEY = "domify-token";
 
 export const getToken = () => SecureStore.getItemAsync(TOKEN_KEY);
 export const setToken = (token) => SecureStore.setItemAsync(TOKEN_KEY, token);

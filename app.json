@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "DomusRD",
+    "name": "Domify",
     "slug": "domusrd-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -36,14 +36,14 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "DomusRD necesita acceso a tus fotos para que puedas subir imágenes de la propiedad.",
-          "cameraPermission": "DomusRD necesita acceso a la cámara para que puedas fotografiar la propiedad."
+          "photosPermission": "Domify necesita acceso a tus fotos para que puedas subir imágenes de la propiedad.",
+          "cameraPermission": "Domify necesita acceso a la cámara para que puedas fotografiar la propiedad."
         }
       ],
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "DomusRD necesita tu ubicación para marcar dónde está la propiedad que estás publicando."
+          "locationAlwaysAndWhenInUsePermission": "Domify necesita tu ubicación para marcar dónde está la propiedad que estás publicando."
         }
       ],
       [
@@ -55,7 +55,7 @@
       [
         "expo-local-authentication",
         {
-          "faceIDPermission": "DomusRD usa Face ID para desbloquear la app cuando activás el bloqueo con biometría."
+          "faceIDPermission": "Domify usa Face ID para desbloquear la app cuando activás el bloqueo con biometría."
         }
       ]
     ]

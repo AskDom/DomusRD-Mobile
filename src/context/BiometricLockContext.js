@@ -3,7 +3,7 @@ import { AppState } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as SecureStore from "expo-secure-store";
 
-const LOCK_KEY = "domusrd-biometric-lock";
+const LOCK_KEY = "domify-biometric-lock";
 
 const BiometricLockContext = createContext(null);
 
@@ -48,7 +48,7 @@ export function BiometricLockProvider({ children }) {
 
   const authenticate = async () => {
     const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: "Desbloqueá DomusRD",
+      promptMessage: "Desbloqueá Domify",
       cancelLabel: "Cancelar",
     });
     if (result.success) setUnlocked(true);

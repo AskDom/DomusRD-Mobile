@@ -221,7 +221,7 @@ export default function Publish({ navigation, route }) {
             {editing ? "Editar propiedad" : "Publicar propiedad"}
           </Text>
           <Text className="text-gray-500 dark:text-gray-400 mb-6">
-            {editing ? "Actualizá los datos de tu propiedad" : "Completá los datos para publicarla en DomusRD"}
+            {editing ? "Actualizá los datos de tu propiedad" : "Completá los datos para publicarla en Domify"}
           </Text>
 
           <Field label="Título">

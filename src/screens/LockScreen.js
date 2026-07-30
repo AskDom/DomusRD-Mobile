@@ -21,7 +21,7 @@ export default function LockScreen() {
       <View className="w-20 h-20 rounded-3xl bg-brand-700 items-center justify-center mb-6">
         <Ionicons name="lock-closed" size={32} color="#fff" />
       </View>
-      <Text className="font-bold text-lg text-gray-900 dark:text-white mb-1">DomusRD bloqueado</Text>
+      <Text className="font-bold text-lg text-gray-900 dark:text-white mb-1">Domify bloqueado</Text>
       <Text className="text-gray-500 dark:text-gray-400 text-center mb-6">
         Desbloqueá con Face ID o tu huella para continuar.
       </Text>

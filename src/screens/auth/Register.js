@@ -17,7 +17,7 @@ export default function Register({ navigation }) {
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-950">
       <View className="flex-1 justify-center px-6">
         <Text className="font-extrabold text-3xl text-gray-900 dark:text-white mb-1">Crear cuenta</Text>
-        <Text className="text-gray-500 dark:text-gray-400 mb-8">Sumate a DomusRD en un minuto</Text>
+        <Text className="text-gray-500 dark:text-gray-400 mb-8">Sumate a Domify en un minuto</Text>
 
         <Text className="font-medium text-sm text-gray-700 dark:text-gray-300 mb-1.5">Nombre</Text>
         <TextInput

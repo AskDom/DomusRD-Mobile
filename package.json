@@ -1,7 +1,7 @@
 {
-  "name": "domusrd-mobile",
+  "name": "domify-mobile",
   "version": "1.0.0",
-  "description": "App móvil de DomusRD (Android + iOS)",
+  "description": "App móvil de Domify (Android + iOS)",
   "main": "index.js",
   "private": true,
   "scripts": {

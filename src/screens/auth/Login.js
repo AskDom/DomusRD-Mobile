@@ -15,7 +15,7 @@ export default function Login({ navigation }) {
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-950">
       <View className="flex-1 justify-center px-6">
-        <Text className="font-extrabold text-4xl text-brand-700 dark:text-brand-400">DomusRD</Text>
+        <Text className="font-extrabold text-4xl text-brand-700 dark:text-brand-400">Domify</Text>
         <Text className="text-gray-500 dark:text-gray-400 mb-10 mt-1">
           Portal inmobiliario dominicano
         </Text>
