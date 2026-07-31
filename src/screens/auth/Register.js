@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, TextInput, Pressable, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import Image from "../../components/Image";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -16,6 +17,11 @@ export default function Register({ navigation }) {
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-950">
       <View className="flex-1 justify-center px-6">
+        <Image
+          source={dark ? require("../../../assets/logo-dark.png") : require("../../../assets/logo-light.png")}
+          className="w-14 h-14 mb-3"
+          contentFit="contain"
+        />
         <Text className="font-extrabold text-3xl text-gray-900 dark:text-white mb-1">Crear cuenta</Text>
         <Text className="text-gray-500 dark:text-gray-400 mb-8">Sumate a Domify en un minuto</Text>
 

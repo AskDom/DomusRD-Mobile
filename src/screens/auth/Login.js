@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, TextInput, Pressable, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import Image from "../../components/Image";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -15,6 +16,11 @@ export default function Login({ navigation }) {
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-950">
       <View className="flex-1 justify-center px-6">
+        <Image
+          source={dark ? require("../../../assets/logo-dark.png") : require("../../../assets/logo-light.png")}
+          className="w-14 h-14 mb-3"
+          contentFit="contain"
+        />
         <Text className="font-extrabold text-4xl text-brand-700 dark:text-brand-400">Domify</Text>
         <Text className="text-gray-500 dark:text-gray-400 mb-10 mt-1">
           Portal inmobiliario dominicano

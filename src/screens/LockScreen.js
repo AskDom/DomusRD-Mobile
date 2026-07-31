@@ -3,10 +3,13 @@ import { View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
+import Image from "../components/Image";
 import { useBiometricLock } from "../context/BiometricLockContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function LockScreen() {
   const { authenticate } = useBiometricLock();
+  const { dark } = useTheme();
 
   // Pide biometría apenas se muestra, para no obligar a un toque extra en
   // el caso normal — el botón de abajo es solo para reintentar si se
@@ -18,6 +21,11 @@ export default function LockScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-950 items-center justify-center px-8">
+      <Image
+        source={dark ? require("../../assets/logo-dark.png") : require("../../assets/logo-light.png")}
+        className="w-16 h-16 mb-4"
+        contentFit="contain"
+      />
       <View className="w-20 h-20 rounded-3xl bg-brand-700 items-center justify-center mb-6">
         <Ionicons name="lock-closed" size={32} color="#fff" />
       </View>
