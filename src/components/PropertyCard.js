@@ -111,7 +111,12 @@ export default function PropertyCard({ property, onPress }) {
           <Text className="font-semibold text-gray-900 dark:text-white text-[15px] flex-1" numberOfLines={1}>
             {property.title}
           </Text>
-          {property.verified && <Ionicons name="checkmark-circle" size={15} color="#10B981" />}
+          {property.verified && (
+            <View className="flex-row items-center gap-0.5 bg-emerald-50 dark:bg-emerald-900/30 rounded-full pl-1 pr-1.5 py-0.5">
+              <Ionicons name="checkmark-circle" size={12} color="#10B981" />
+              <Text className="text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">Verificado</Text>
+            </View>
+          )}
         </View>
 
         <Text className="text-gray-500 dark:text-gray-400 text-sm mt-0.5" numberOfLines={1}>

@@ -159,6 +159,12 @@ export default function PropertyDetail({ route, navigation }) {
                 </Text>
               </View>
             ) : null}
+            {property.verified ? (
+              <View className="flex-row items-center gap-1 bg-white/90 dark:bg-gray-900/85 rounded-full pl-1.5 pr-2.5 py-1">
+                <Ionicons name="checkmark-circle" size={14} color="#10B981" />
+                <Text className="text-emerald-600 dark:text-emerald-400 text-xs font-bold">Verificado</Text>
+              </View>
+            ) : null}
           </View>
         </View>
 
