@@ -39,34 +39,41 @@ export default function PropertyCard({ property, onPress }) {
   ].filter(Boolean);
 
   return (
-    <Pressable onPress={onPress} className="mb-7">
+    <View className="mb-7">
       <View className="relative rounded-2xl overflow-hidden" style={{ width: imageSize, height: imageSize }}>
         <ScrollView
           horizontal
           pagingEnabled
+          nestedScrollEnabled
+          directionalLockEnabled
           showsHorizontalScrollIndicator={false}
           onScroll={onScroll}
           scrollEventThrottle={32}
         >
-          {images.map((uri, i) =>
-            uri ? (
-              <Image
-                key={i}
-                source={{ uri }}
-                style={{ width: imageSize, height: imageSize }}
-                contentFit="cover"
-                transition={150}
-              />
-            ) : (
-              <View
-                key={i}
-                style={{ width: imageSize, height: imageSize }}
-                className="bg-gray-100 dark:bg-gray-800 items-center justify-center"
-              >
-                <Ionicons name="home-outline" size={32} color={iconMuted} />
-              </View>
-            )
-          )}
+          {/* El Pressable de "abrir propiedad" va por imagen, adentro del
+              ScrollView, en vez de envolviendo todo el card desde afuera —
+              así el propio ScrollView decide si el toque fue swipe o tap
+              (nativo, sin ambigüedad) en lugar de competir con un Pressable
+              ancestro que a veces se quedaba con el gesto. */}
+          {images.map((uri, i) => (
+            <Pressable key={i} onPress={onPress}>
+              {uri ? (
+                <Image
+                  source={{ uri }}
+                  style={{ width: imageSize, height: imageSize }}
+                  contentFit="cover"
+                  transition={150}
+                />
+              ) : (
+                <View
+                  style={{ width: imageSize, height: imageSize }}
+                  className="bg-gray-100 dark:bg-gray-800 items-center justify-center"
+                >
+                  <Ionicons name="home-outline" size={32} color={iconMuted} />
+                </View>
+              )}
+            </Pressable>
+          ))}
         </ScrollView>
 
         {images.length > 1 && (
@@ -99,7 +106,7 @@ export default function PropertyCard({ property, onPress }) {
         </Pressable>
       </View>
 
-      <View className="pt-2.5">
+      <Pressable onPress={onPress} className="pt-2.5">
         <View className="flex-row items-center justify-between gap-2">
           <Text className="font-semibold text-gray-900 dark:text-white text-[15px] flex-1" numberOfLines={1}>
             {property.title}
@@ -125,7 +132,7 @@ export default function PropertyCard({ property, onPress }) {
             <Text className="text-gray-500 dark:text-gray-400 text-sm">/mes</Text>
           )}
         </View>
-      </View>
-    </Pressable>
+      </Pressable>
+    </View>
   );
 }
