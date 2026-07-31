@@ -92,21 +92,26 @@ export default function PropertyList({ navigation }) {
     return () => clearTimeout(t);
   }, [load]);
 
-  const searchAndTabs = (
-    <>
-      <View className="flex-row items-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl px-3.5">
-        <Ionicons name="search-outline" size={18} color={placeholderColor} />
-        <TextInput
-          value={query}
-          onChangeText={setQuery}
-          placeholder="Busca por ciudad o sector..."
-          placeholderTextColor={placeholderColor}
-          returnKeyType="search"
-          onSubmitEditing={load}
-          className="flex-1 px-2.5 py-3 text-gray-900 dark:text-white"
-        />
-      </View>
+  // Separado del resto de los filtros a propósito: searchBar queda fijo
+  // arriba de la lista (fuera del FlatList) al hacer scroll, mientras que
+  // las tabs de categoría y el contador se desplazan con el contenido.
+  const searchBar = (
+    <View className="flex-row items-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl px-3.5">
+      <Ionicons name="search-outline" size={18} color={placeholderColor} />
+      <TextInput
+        value={query}
+        onChangeText={setQuery}
+        placeholder="Busca por ciudad o sector..."
+        placeholderTextColor={placeholderColor}
+        returnKeyType="search"
+        onSubmitEditing={load}
+        className="flex-1 px-2.5 py-3 text-gray-900 dark:text-white"
+      />
+    </View>
+  );
 
+  const tabsAndCount = (
+    <>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -177,7 +182,8 @@ export default function PropertyList({ navigation }) {
       <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
         <View className="px-4 pt-4 pb-2">
           <Text className="font-extrabold text-2xl text-gray-900 dark:text-white mb-3">Propiedades</Text>
-          {searchAndTabs}
+          {searchBar}
+          {tabsAndCount}
         </View>
 
         {loading ? (
@@ -206,10 +212,14 @@ export default function PropertyList({ navigation }) {
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
+      {/* Fuera del FlatList a propósito: es lo único que queda fijo arriba
+          al hacer scroll. El título y las tabs de categoría van dentro del
+          ListHeaderComponent para que sí se desplacen con la lista. */}
+      <View className="px-4 pt-4 pb-3 bg-gray-50 dark:bg-gray-950">{searchBar}</View>
       <FlatList
         data={loading || error ? [] : properties}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 16, flexGrow: 1 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 16, flexGrow: 1 }}
         onRefresh={load}
         refreshing={loading}
         onEndReached={loadMore}
@@ -222,11 +232,9 @@ export default function PropertyList({ navigation }) {
           ) : null
         }
         ListHeaderComponent={
-          // Va adentro del FlatList para que se desplace con el scroll en
-          // vez de quedar fijo ocupando pantalla todo el tiempo.
           <View className="pb-4">
             <Text className="font-extrabold text-2xl text-gray-900 dark:text-white mb-3">Propiedades</Text>
-            {searchAndTabs}
+            {tabsAndCount}
           </View>
         }
         ListEmptyComponent={
