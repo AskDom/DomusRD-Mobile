@@ -16,6 +16,7 @@ import { useAuth } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { useTheme } from "../context/ThemeContext";
 import { formatPrice } from "../components/PropertyCard";
+import PropertyMap from "../components/PropertyMap";
 import SectionHeader from "../components/SectionHeader";
 import ReviewSection from "../components/ReviewSection";
 import Image from "../components/Image";
@@ -77,6 +78,9 @@ export default function PropertyDetail({ route, navigation }) {
   const openInMaps = () => {
     const label = encodeURIComponent(property.title);
     Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${property.lat},${property.lng}&query_place_id=${label}`);
+  };
+  const openInWaze = () => {
+    Linking.openURL(`https://waze.com/ul?ll=${property.lat},${property.lng}&navigate=yes`);
   };
 
   const onGalleryScroll = (e) => {
@@ -247,13 +251,28 @@ export default function PropertyDetail({ route, navigation }) {
             </View>
 
             {property.lat != null ? (
-              <Pressable
-                onPress={openInMaps}
-                className="flex-row items-center justify-center gap-2 bg-brand-50 dark:bg-brand-900/25 border border-brand-100 dark:border-brand-800 rounded-2xl py-3.5 active:opacity-80"
-              >
-                <Ionicons name="map-outline" size={18} color={dark ? colors.brand400 : colors.brand700} />
-                <Text className="text-brand-700 dark:text-brand-300 font-semibold">Abrir en Maps</Text>
-              </Pressable>
+              <>
+                <View className="rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 mb-3" style={{ height: 180 }}>
+                  <PropertyMap properties={[property]} dark={dark} onSelectProperty={() => {}} />
+                </View>
+
+                <View className="flex-row gap-2.5">
+                  <Pressable
+                    onPress={openInMaps}
+                    className="flex-1 flex-row items-center justify-center gap-2 bg-brand-50 dark:bg-brand-900/25 border border-brand-100 dark:border-brand-800 rounded-2xl py-3.5 active:opacity-80"
+                  >
+                    <MaterialCommunityIcons name="google-maps" size={18} color={dark ? colors.brand400 : colors.brand700} />
+                    <Text className="text-brand-700 dark:text-brand-300 font-semibold">Google Maps</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={openInWaze}
+                    className="flex-1 flex-row items-center justify-center gap-2 bg-brand-50 dark:bg-brand-900/25 border border-brand-100 dark:border-brand-800 rounded-2xl py-3.5 active:opacity-80"
+                  >
+                    <MaterialCommunityIcons name="waze" size={18} color={dark ? colors.brand400 : colors.brand700} />
+                    <Text className="text-brand-700 dark:text-brand-300 font-semibold">Waze</Text>
+                  </Pressable>
+                </View>
+              </>
             ) : (
               <View className="items-center bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl py-6 px-4">
                 <Ionicons name="lock-closed-outline" size={22} color={dark ? "#6B7280" : "#9CA3AF"} />
