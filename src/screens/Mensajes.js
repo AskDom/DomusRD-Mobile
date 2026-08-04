@@ -16,7 +16,7 @@ export default function Mensajes({ navigation }) {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950" edges={["left", "right", "bottom"]}>
       <View className="px-4 pt-4 pb-1">
         <Text className="font-extrabold text-2xl text-gray-900 dark:text-white">Mensajes</Text>
       </View>

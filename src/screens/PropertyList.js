@@ -179,7 +179,10 @@ export default function PropertyList({ navigation }) {
 
   if (viewMode === "map") {
     return (
-      <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
+      // edges sin "top": el header nativo (BrandTitle) ya reserva el
+      // espacio del notch — si esto también lo hiciera, se duplicaría y
+      // dejaba un salto grande entre el header y el buscador.
+      <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950" edges={["left", "right", "bottom"]}>
         <View className="px-4 pt-4 pb-2">
           <Text className="font-extrabold text-2xl text-gray-900 dark:text-white mb-3">Propiedades</Text>
           {searchBar}
@@ -211,7 +214,7 @@ export default function PropertyList({ navigation }) {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950" edges={["left", "right", "bottom"]}>
       {/* Fuera del FlatList a propósito: es lo único que queda fijo arriba
           al hacer scroll. El título y las tabs de categoría van dentro del
           ListHeaderComponent para que sí se desplacen con la lista. */}

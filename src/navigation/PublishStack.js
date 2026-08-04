@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Publish from "../screens/Publish";
 import PropertyDetail from "../screens/PropertyDetail";
+import BrandTitle from "../components/BrandTitle";
 
 const Stack = createNativeStackNavigator();
 
@@ -11,7 +12,7 @@ export default function PublishStack() {
       <Stack.Screen
         name="Publish"
         component={Publish}
-        options={{ headerShown: false, title: "Publicar" }}
+        options={{ headerTitle: () => <BrandTitle />, title: "Publicar" }}
       />
       <Stack.Screen
         name="PropertyDetail"

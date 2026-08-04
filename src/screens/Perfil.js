@@ -220,7 +220,7 @@ function PerfilScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950">
+    <SafeAreaView className="flex-1 bg-gray-50 dark:bg-gray-950" edges={["left", "right", "bottom"]}>
       {/*
         ScrollView simple en vez de FlatList: "mis propiedades" de un
         vendedor es una lista corta, no necesita virtualización — y la

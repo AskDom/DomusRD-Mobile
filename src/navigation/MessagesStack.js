@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Mensajes from "../screens/Mensajes";
 import ConversationThread from "../screens/ConversationThread";
+import BrandTitle from "../components/BrandTitle";
 
 const Stack = createNativeStackNavigator();
 
@@ -11,7 +12,7 @@ export default function MessagesStack() {
       <Stack.Screen
         name="MessagesList"
         component={Mensajes}
-        options={{ headerShown: false, title: "Mensajes" }}
+        options={{ headerTitle: () => <BrandTitle />, title: "Mensajes" }}
       />
       <Stack.Screen
         name="ConversationThread"

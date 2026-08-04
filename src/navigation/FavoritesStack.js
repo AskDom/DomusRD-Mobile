@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Favoritos from "../screens/Favoritos";
 import PropertyDetail from "../screens/PropertyDetail";
 import ConversationThread from "../screens/ConversationThread";
+import BrandTitle from "../components/BrandTitle";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,7 +15,7 @@ export default function FavoritesStack() {
         component={Favoritos}
         // title queda para que el botón de "volver" de las pantallas
         // siguientes diga "Favoritos" en vez del nombre crudo de la ruta.
-        options={{ headerShown: false, title: "Favoritos" }}
+        options={{ headerTitle: () => <BrandTitle />, title: "Favoritos" }}
       />
       <Stack.Screen
         name="PropertyDetail"

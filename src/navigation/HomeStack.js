@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import PropertyList from "../screens/PropertyList";
 import PropertyDetail from "../screens/PropertyDetail";
 import ConversationThread from "../screens/ConversationThread";
+import BrandTitle from "../components/BrandTitle";
 
 const Stack = createNativeStackNavigator();
 
@@ -12,12 +13,11 @@ export default function HomeStack() {
       <Stack.Screen
         name="PropertyList"
         component={PropertyList}
-        // El propio contenido ya tiene su título ("Propiedades") — un header
-        // nativo encima solo duplicaba el mensaje. El title igual queda acá
-        // porque React Navigation lo usa como texto del botón de "volver" en
-        // las pantallas que se abren desde esta (si no, muestra el nombre
-        // crudo de la ruta, "PropertyList").
-        options={{ headerShown: false, title: "Inicio" }}
+        // Header nativo con el logo — es la única marca de la app que queda
+        // visible una vez pasado el login (antes no había ninguna). El
+        // title queda para que el botón de "volver" de las pantallas
+        // siguientes diga "Inicio" en vez del nombre crudo de la ruta.
+        options={{ headerTitle: () => <BrandTitle />, title: "Inicio" }}
       />
       <Stack.Screen
         name="PropertyDetail"

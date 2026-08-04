@@ -211,7 +211,13 @@ export default function Publish({ navigation, route }) {
 
   return (
     <KeyboardAvoidingView className="flex-1" behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <SafeAreaView className="flex-1 bg-white dark:bg-gray-950">
+      {/* Como pestaña "Publicar" hay header nativo (BrandTitle) arriba, que
+          ya reserva el notch — pero al editar (empujada desde Perfil) no
+          hay header, así que ahí sí hace falta el margen "top" acá. */}
+      <SafeAreaView
+        className="flex-1 bg-white dark:bg-gray-950"
+        edges={editing ? ["top", "left", "right", "bottom"] : ["left", "right", "bottom"]}
+      >
         <ScrollView contentContainerStyle={{ padding: 20 }} keyboardShouldPersistTaps="handled">
           {editing && (
             <Pressable
