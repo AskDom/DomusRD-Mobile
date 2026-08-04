@@ -59,11 +59,17 @@ export function InboxProvider({ children }) {
 
     socket.on("new_message", upsert);
     socket.on("message_sent", upsert);
+    // Si el socket se cayó un rato (red inestable, pantalla bloqueada) y se
+    // reconectó, cualquier mensaje que haya llegado durante el corte no lo
+    // vimos por evento — "connect" también dispara en cada reconexión, no
+    // solo la primera vez, así que sirve para recuperar lo que se perdió.
+    socket.on("connect", fetchMessages);
     return () => {
       socket.off("new_message", upsert);
       socket.off("message_sent", upsert);
+      socket.off("connect", fetchMessages);
     };
-  }, [socket]);
+  }, [socket, fetchMessages]);
 
   // Optimista: agrega un mensaje temporal, lo reemplaza por el real cuando
   // responde el backend, y lo saca si falla. Sin websocket, este es el único
