@@ -90,7 +90,7 @@ export default function PropertyDetail({ route, navigation }) {
 
   const handleShare = () => {
     const link = WEB_URL ? `${WEB_URL}/property/${property.id}` : null;
-    const message = [`${property.title} — ${formatPrice(property.price)}`, property.city, link]
+    const message = [`${property.title} — ${formatPrice(property.price, property.currency)}`, property.city, link]
       .filter(Boolean)
       .join("\n");
     Share.share({ message, ...(link ? { url: link } : {}) });
@@ -201,7 +201,7 @@ export default function PropertyDetail({ route, navigation }) {
               {status === "Renta" ? "Renta mensual" : "Precio de venta"}
             </Text>
             <Text className="font-extrabold text-3xl text-brand-700 dark:text-brand-400">
-              {formatPrice(property.price)}
+              {formatPrice(property.price, property.currency)}
               {status === "Renta" && (
                 <Text className="text-base font-normal text-gray-400 dark:text-gray-500"> /mes</Text>
               )}

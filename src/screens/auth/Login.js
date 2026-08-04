@@ -6,12 +6,26 @@ import Image from "../../components/Image";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Login({ navigation }) {
-  const { login, error, loading } = useAuth();
+  const { login, error, setError, loading } = useAuth();
   const { dark } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const placeholderColor = dark ? "#6B7280" : "#9CA3AF";
+
+  const handleLogin = () => {
+    if (!EMAIL_RE.test(email.trim())) {
+      setError("El correo no es válido");
+      return;
+    }
+    if (!password) {
+      setError("La contraseña es requerida");
+      return;
+    }
+    login({ email: email.trim(), password });
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-950">
@@ -50,7 +64,7 @@ export default function Login({ navigation }) {
         {error ? <Text className="text-red-600 dark:text-red-400 mb-4">{error}</Text> : null}
 
         <Pressable
-          onPress={() => login({ email, password })}
+          onPress={handleLogin}
           disabled={loading}
           className="bg-brand-700 rounded-2xl py-4 items-center mb-5 shadow-sm active:bg-brand-800 disabled:opacity-60"
         >

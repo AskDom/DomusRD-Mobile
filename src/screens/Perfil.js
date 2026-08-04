@@ -86,7 +86,7 @@ function MyPropertyRow({ property, onEdit, onDelete, onVerify, iconColor }) {
           {property.title}
         </Text>
         <Text className="font-extrabold text-brand-700 dark:text-brand-400 text-sm mt-0.5">
-          {formatPrice(property.price)}
+          {formatPrice(property.price, property.currency)}
         </Text>
 
         <View className="flex-row items-center gap-3 mt-2">

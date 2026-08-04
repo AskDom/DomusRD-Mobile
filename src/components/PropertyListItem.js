@@ -49,7 +49,7 @@ export default function PropertyListItem({ property, onPress }) {
           </Text>
         </View>
         <Text className="font-extrabold text-brand-700 dark:text-brand-400 text-sm mt-1">
-          {formatPrice(property.price)}
+          {formatPrice(property.price, property.currency)}
         </Text>
       </View>
 

@@ -8,10 +8,13 @@ import { colors } from "../theme/colors";
 // Mismos colores que el resto de la app: brand navy para Venta, verde para Renta.
 const STATUS_COLOR = { Venta: colors.brand700, Renta: "#059669" };
 
-const formatShortPrice = (price) => {
-  if (price >= 1000000) return `$${(price / 1000000).toFixed(1)}M`;
-  if (price >= 1000) return `$${Math.round(price / 1000)}K`;
-  return `$${price}`;
+const formatShortPrice = (price, currency) => {
+  // "$" a secas es ambiguo en RD (se lee como peso) — el resto de la app
+  // ya marca el dólar como "US$", esto solo lo alinea.
+  const symbol = currency === "DOP" ? "RD$" : "US$";
+  if (price >= 1000000) return `${symbol}${(price / 1000000).toFixed(1)}M`;
+  if (price >= 1000) return `${symbol}${Math.round(price / 1000)}K`;
+  return `${symbol}${price}`;
 };
 
 // República Dominicana centrada, para cuando no hay ninguna propiedad con ubicación.
@@ -37,7 +40,7 @@ function buildHtml(properties, dark) {
       id: p.id,
       lat: p.lat,
       lng: p.lng,
-      label: formatShortPrice(p.price),
+      label: formatShortPrice(p.price, p.currency),
       color: STATUS_COLOR[statusLabel(p.status)] || STATUS_COLOR.Venta,
     }));
 
@@ -46,8 +49,8 @@ function buildHtml(properties, dark) {
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" integrity="sha384-pmjIAcz2bAn0xukfxADbZIb3t8oRT9Sv0rvO+BR5Csr6Dhqq+nZs59P0pPKQJkEV" crossorigin="anonymous" />
   <style>
     html, body, #map { height: 100%; margin: 0; padding: 0; background: ${MAP_BG[dark ? "dark" : "light"]}; }
     .leaflet-control-zoom { border: none !important; margin: 12px !important; }
@@ -78,8 +81,8 @@ function buildHtml(properties, dark) {
 <body>
   <div id="map"></div>
   <div class="map-attr">© OpenStreetMap, © CARTO</div>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" integrity="sha384-eXVCORTRlv4FUUgS/xmOyr66XBVraen8ATNLMESp92FKXLAMiKkerixTiBvXriZr" crossorigin="anonymous"></script>
   <script>
     var points = ${JSON.stringify(points)};
     var map = L.map('map', { zoomControl: true, attributionControl: false });
@@ -141,7 +144,6 @@ export default function PropertyMap({ properties, onSelectProperty, dark }) {
     <View className="flex-1">
       <WebView
         key={mapKey}
-        originWhitelist={["*"]}
         source={{ html }}
         onMessage={(event) => {
           try {

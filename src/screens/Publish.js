@@ -32,6 +32,11 @@ const STATUSES = [
   { value: "RENTA", label: "Renta" },
 ];
 
+const CURRENCIES = [
+  { value: "USD", label: "USD ($)" },
+  { value: "DOP", label: "RD$ (DOP)" },
+];
+
 function Field({ label, children }) {
   return (
     <View className="mb-4">
@@ -55,6 +60,7 @@ export default function Publish({ navigation, route }) {
   const [title, setTitle] = useState(editing?.title || "");
   const [description, setDescription] = useState(editing?.description || "");
   const [price, setPrice] = useState(editing ? String(editing.price) : "");
+  const [currency, setCurrency] = useState(editing?.currency || "USD");
   const [city, setCity] = useState(editing?.city || "");
   const [rooms, setRooms] = useState(editing ? String(editing.rooms ?? 1) : "1");
   const [baths, setBaths] = useState(editing ? String(editing.baths ?? 1) : "1");
@@ -163,6 +169,7 @@ export default function Publish({ navigation, route }) {
       title: title.trim(),
       description: description.trim(),
       price: Number(price),
+      currency,
       city: city.trim(),
       lat: location.lat,
       lng: location.lng,
@@ -241,7 +248,31 @@ export default function Publish({ navigation, route }) {
             />
           </Field>
 
-          <Field label="Precio (US$)">
+          <Field label="Moneda">
+            <View className="flex-row gap-2">
+              {CURRENCIES.map((c) => (
+                <Pressable
+                  key={c.value}
+                  onPress={() => setCurrency(c.value)}
+                  className={`px-4 py-2 rounded-full ${
+                    currency === c.value ? "bg-brand-700 dark:bg-brand-700" : "bg-gray-100 dark:bg-gray-800"
+                  }`}
+                >
+                  <Text
+                    className={
+                      currency === c.value
+                        ? "text-white dark:text-white font-semibold text-sm"
+                        : "text-gray-600 dark:text-gray-300 text-sm"
+                    }
+                  >
+                    {c.label}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </Field>
+
+          <Field label="Precio">
             <TextInput value={price} onChangeText={setPrice} className={inputClass} placeholder="150000" placeholderTextColor={placeholderColor} keyboardType="numeric" />
           </Field>
 

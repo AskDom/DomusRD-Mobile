@@ -1,6 +1,15 @@
 import * as SecureStore from "expo-secure-store";
 
 export const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:5000";
+
+// Un build de producción con la URL del backend en texto plano manda el
+// Bearer token (y todo lo demás) sin cifrar por la red — cortamos acá en
+// vez de dejar que eso pase desapercibido hasta un pentest o una queja.
+if (!__DEV__ && !API_URL.startsWith("https://")) {
+  throw new Error(
+    `EXPO_PUBLIC_API_URL debe usar https:// en producción (valor actual: "${API_URL}").`
+  );
+}
 // Deploy de prueba en Vercel — se actualiza en .env cuando haya dominio
 // definitivo, sin tocar código. undefined si no está seteada (ej. build sin
 // .env): en ese caso se comparte solo el texto, sin link.

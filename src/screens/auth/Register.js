@@ -6,13 +6,35 @@ import Image from "../../components/Image";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Register({ navigation }) {
-  const { register, error, loading } = useAuth();
+  const { register, error, setError, loading } = useAuth();
   const { dark } = useTheme();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const placeholderColor = dark ? "#6B7280" : "#9CA3AF";
+
+  // Mismas reglas que valida el backend (registerValidator) — esto solo
+  // evita el viaje de red cuando el error ya se puede ver acá; el backend
+  // sigue siendo quien realmente decide si el dato es válido.
+  const handleRegister = () => {
+    const trimmedName = name.trim();
+    if (trimmedName.length < 2 || trimmedName.length > 60) {
+      setError("El nombre debe tener entre 2 y 60 caracteres");
+      return;
+    }
+    if (!EMAIL_RE.test(email.trim())) {
+      setError("El correo no es válido");
+      return;
+    }
+    if (password.length < 5) {
+      setError("La contraseña debe tener al menos 5 caracteres");
+      return;
+    }
+    register({ name: trimmedName, email: email.trim(), password });
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-950">
@@ -58,7 +80,7 @@ export default function Register({ navigation }) {
         {error ? <Text className="text-red-600 dark:text-red-400 mb-4">{error}</Text> : null}
 
         <Pressable
-          onPress={() => register({ name, email, password })}
+          onPress={handleRegister}
           disabled={loading}
           className="bg-brand-700 rounded-2xl py-4 items-center mb-5 shadow-sm active:bg-brand-800 disabled:opacity-60"
         >

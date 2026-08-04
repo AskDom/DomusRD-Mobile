@@ -13,6 +13,7 @@
     },
     "android": {
       "package": "com.domusrd.mobile",
+      "usesCleartextTraffic": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon-foreground.png",
         "backgroundColor": "#102E47"

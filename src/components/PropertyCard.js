@@ -8,8 +8,10 @@ import { typeLabel, statusLabel } from "../utils/propertyLabels";
 import { colors } from "../theme/colors";
 import Image from "./Image";
 
-export const formatPrice = (price) =>
-  `US$${Number(price).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+export const formatPrice = (price, currency = "USD") => {
+  const symbol = currency === "DOP" ? "RD$" : "US$";
+  return `${symbol}${Number(price).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+};
 
 // Mismo padding horizontal que usa el contentContainerStyle del FlatList del
 // feed (16px de cada lado) — la imagen ocupa todo ese ancho, como en Airbnb.
@@ -131,7 +133,7 @@ export default function PropertyCard({ property, onPress }) {
 
         <View className="flex-row items-baseline gap-1 mt-1.5">
           <Text className="font-bold text-gray-900 dark:text-white text-[15px]">
-            {formatPrice(property.price)}
+            {formatPrice(property.price, property.currency)}
           </Text>
           {status === "Renta" && (
             <Text className="text-gray-500 dark:text-gray-400 text-sm">/mes</Text>

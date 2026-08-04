@@ -47,7 +47,9 @@ export default function usePushNotifications(navigationRef) {
 
       const projectId = Constants.expoConfig?.extra?.eas?.projectId;
       if (!projectId) {
-        console.log('Push notifications: falta vincular el proyecto con "eas init" para obtener un projectId.');
+        if (__DEV__) {
+          console.log('Push notifications: falta vincular el proyecto con "eas init" para obtener un projectId.');
+        }
         return;
       }
 
@@ -59,7 +61,11 @@ export default function usePushNotifications(navigationRef) {
         });
         registeredFor.current = currentUser.id;
       } catch (err) {
-        console.log("No se pudo registrar el push token:", err.message);
+        // Solo en dev: en producción, los logs de consola pueden terminar
+        // capturados por recolectores de logs del dispositivo/OEM.
+        if (__DEV__) {
+          console.log("No se pudo registrar el push token:", err.message);
+        }
       }
     })();
   }, [currentUser]);
