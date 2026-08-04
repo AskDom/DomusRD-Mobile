@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useFavorites } from "../context/FavoritesContext";
 import { useTheme } from "../context/ThemeContext";
-import { typeLabel, statusLabel } from "../utils/propertyLabels";
+import { typeLabel, statusLabel, formatLocation } from "../utils/propertyLabels";
 import { colors } from "../theme/colors";
 import Image from "./Image";
 
@@ -122,7 +122,7 @@ export default function PropertyCard({ property, onPress }) {
         </View>
 
         <Text className="text-gray-500 dark:text-gray-400 text-sm mt-0.5" numberOfLines={1}>
-          {typeLabel(property.type)} en {property.city || "República Dominicana"}
+          {typeLabel(property.type)} en {formatLocation(property.city, property.sector)}
         </Text>
 
         {amenities.length > 0 && (

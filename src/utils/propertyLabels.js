@@ -5,3 +5,9 @@ const STATUS_MAP = { VENTA: "Venta", RENTA: "Renta", VENDIDO: "Vendido", RENTADO
 
 export const typeLabel = (type) => TYPE_MAP[type] || type;
 export const statusLabel = (status) => STATUS_MAP[status] || status;
+
+// "Sabana Larga, Santo Domingo Este" si hay sector, si no solo la ciudad.
+export const formatLocation = (city, sector, fallback = "República Dominicana") => {
+  const cityText = city || fallback;
+  return sector ? `${sector}, ${cityText}` : cityText;
+};

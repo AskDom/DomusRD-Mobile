@@ -20,6 +20,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useToast } from "../context/ToastContext";
 import { colors } from "../theme/colors";
 import Image from "../components/Image";
+import CityAutocomplete from "../components/CityAutocomplete";
 
 const TYPES = [
   { value: "APARTAMENTO", label: "Apartamento" },
@@ -62,6 +63,7 @@ export default function Publish({ navigation, route }) {
   const [price, setPrice] = useState(editing ? String(editing.price) : "");
   const [currency, setCurrency] = useState(editing?.currency || "USD");
   const [city, setCity] = useState(editing?.city || "");
+  const [sector, setSector] = useState(editing?.sector || "");
   const [rooms, setRooms] = useState(editing ? String(editing.rooms ?? 1) : "1");
   const [baths, setBaths] = useState(editing ? String(editing.baths ?? 1) : "1");
   const [parking, setParking] = useState(editing ? String(editing.parking ?? 0) : "0");
@@ -125,13 +127,19 @@ export default function Publish({ navigation, route }) {
       const pos = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
       setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
 
-      if (!city.trim()) {
+      if (!city.trim() || !sector.trim()) {
         const [place] = await Location.reverseGeocodeAsync({
           latitude: pos.coords.latitude,
           longitude: pos.coords.longitude,
         });
-        const guessedCity = place?.city || place?.subregion || place?.region;
-        if (guessedCity) setCity(guessedCity);
+        if (!city.trim()) {
+          const guessedCity = place?.city || place?.subregion || place?.region;
+          if (guessedCity) setCity(guessedCity);
+        }
+        if (!sector.trim()) {
+          const guessedSector = place?.district || place?.name;
+          if (guessedSector) setSector(guessedSector);
+        }
       }
     } catch {
       setError("No se pudo obtener tu ubicación. Probá de nuevo.");
@@ -171,6 +179,7 @@ export default function Publish({ navigation, route }) {
       price: Number(price),
       currency,
       city: city.trim(),
+      sector: sector.trim() || null,
       lat: location.lat,
       lng: location.lng,
       rooms: Number(rooms) || 1,
@@ -283,7 +292,17 @@ export default function Publish({ navigation, route }) {
           </Field>
 
           <Field label="Ciudad">
-            <TextInput value={city} onChangeText={setCity} className={inputClass} placeholder="Santo Domingo" placeholderTextColor={placeholderColor} />
+            <CityAutocomplete
+              value={city}
+              onChange={setCity}
+              className={inputClass}
+              placeholderTextColor={placeholderColor}
+              placeholder="Santo Domingo Este"
+            />
+          </Field>
+
+          <Field label="Sector / Barrio (opcional)">
+            <TextInput value={sector} onChangeText={setSector} className={inputClass} placeholder="Sabana Larga" placeholderTextColor={placeholderColor} />
           </Field>
 
           <View className="flex-row gap-3 mb-4">

@@ -21,7 +21,7 @@ import SectionHeader from "../components/SectionHeader";
 import ReviewSection from "../components/ReviewSection";
 import Image from "../components/Image";
 import { PropertyDetailSkeleton } from "../components/Skeleton";
-import { typeLabel, statusLabel } from "../utils/propertyLabels";
+import { typeLabel, statusLabel, formatLocation } from "../utils/propertyLabels";
 import { colors } from "../theme/colors";
 
 const STATUS_BG = {
@@ -90,7 +90,7 @@ export default function PropertyDetail({ route, navigation }) {
 
   const handleShare = () => {
     const link = WEB_URL ? `${WEB_URL}/property/${property.id}` : null;
-    const message = [`${property.title} — ${formatPrice(property.price, property.currency)}`, property.city, link]
+    const message = [`${property.title} — ${formatPrice(property.price, property.currency)}`, formatLocation(property.city, property.sector), link]
       .filter(Boolean)
       .join("\n");
     Share.share({ message, ...(link ? { url: link } : {}) });
@@ -192,7 +192,7 @@ export default function PropertyDetail({ route, navigation }) {
           </View>
           <View className="flex-row items-center gap-1 mt-1">
             <Ionicons name="location-outline" size={14} color={dark ? "#9CA3AF" : "#6B7280"} />
-            <Text className="text-gray-500 dark:text-gray-400">{property.city}</Text>
+            <Text className="text-gray-500 dark:text-gray-400">{formatLocation(property.city, property.sector)}</Text>
           </View>
 
           {/* Precio */}
@@ -253,7 +253,7 @@ export default function PropertyDetail({ route, navigation }) {
             <SectionHeader>Ubicación</SectionHeader>
             <View className="flex-row items-center gap-1.5 mb-3">
               <Ionicons name="location-outline" size={14} color={dark ? "#9CA3AF" : "#6B7280"} />
-              <Text className="text-gray-500 dark:text-gray-400 text-sm">{property.city}</Text>
+              <Text className="text-gray-500 dark:text-gray-400 text-sm">{formatLocation(property.city, property.sector)}</Text>
             </View>
 
             {property.lat != null ? (

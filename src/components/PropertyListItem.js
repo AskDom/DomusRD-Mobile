@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useFavorites } from "../context/FavoritesContext";
 import { useTheme } from "../context/ThemeContext";
-import { typeLabel, statusLabel } from "../utils/propertyLabels";
+import { typeLabel, statusLabel, formatLocation } from "../utils/propertyLabels";
 import { formatPrice } from "./PropertyCard";
 import { colors } from "../theme/colors";
 import Image from "./Image";
@@ -45,7 +45,7 @@ export default function PropertyListItem({ property, onPress }) {
         <View className="flex-row items-center gap-1 mt-0.5">
           <Ionicons name="location-outline" size={11} color={iconColor} />
           <Text className="text-gray-400 dark:text-gray-500 text-xs" numberOfLines={1}>
-            {property.city}
+            {formatLocation(property.city, property.sector)}
           </Text>
         </View>
         <Text className="font-extrabold text-brand-700 dark:text-brand-400 text-sm mt-1">
